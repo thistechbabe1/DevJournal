@@ -5,10 +5,14 @@ const jwt = require('jsonwebtoken');
 const app = require('../app');
 const User = require('../models/User');
 
+jest.setTimeout(30000);
+
 let mongoServer;
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
+  mongoServer = await MongoMemoryServer.create({
+    instance: { startupTimeoutMs: 60000 },
+  });
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);
 });
