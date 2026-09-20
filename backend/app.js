@@ -1,9 +1,17 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const path = require('path');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
+
+// Trust proxy for Render / Cloud hosting environment
+app.set('trust proxy', 1);
+
+// Security Headers
+app.use(helmet());
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -27,9 +35,26 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-app.use('/api/auth', require('./routes/authRoutes'));
+// Rate Limiting Config
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'test' ? (req) => (req.headers['x-test-ratelimit'] ? 5 : 500) : 100,
+  message: { message: 'Too many authentication attempts, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const aiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: process.env.NODE_ENV === 'test' ? (req) => (req.headers['x-test-ratelimit'] ? 5 : 500) : 50,
+  message: { message: 'Too many AI requests, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/auth', authLimiter, require('./routes/authRoutes'));
 app.use('/api/journals', require('./routes/journalRoutes'));
-app.use('/api/ai', require('./routes/aiRoutes'));
+app.use('/api/ai', aiLimiter, require('./routes/aiRoutes'));
 
 app.get('/', (req, res) => {
   res.send('API is running...');
