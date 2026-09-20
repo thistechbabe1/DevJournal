@@ -1,53 +1,53 @@
 const request = require('supertest');
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
 const jwt = require('jsonwebtoken');
 const app = require('../app');
 const User = require('../models/User');
+const { connectDB, disconnectDB } = require('./testHelper');
 
 jest.setTimeout(30000);
 
 let mongoServer;
 
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create({
-    instance: { startupTimeoutMs: 60000 },
-  });
-  const uri = mongoServer.getUri();
-  await mongoose.connect(uri);
+  mongoServer = await connectDB();
 });
 
 afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
+  await disconnectDB();
+});
+
+beforeEach(async () => {
+  await User.deleteMany({});
 });
 
 describe('Auth Middleware & Centralized Error Handling', () => {
-  const secret = 'test_jwt_secret';
-  beforeEach(() => {
-    process.env.JWT_SECRET = secret;
+  it('Missing Bearer token returns clean 401 without process crash', async () => {
+    const res = await request(app).get('/api/journals');
+    expect(res.status).toBe(401);
+    expect(res.body).toEqual({ message: 'Not authorized, no token' });
   });
 
-  test('Missing Bearer token returns clean 401 without process crash', async () => {
-    const res = await request(app).get('/api/auth/profile');
-    expect(res.statusCode).toBe(401);
-    expect(res.body.message).toMatch(/not authorized, no token/i);
-  });
-
-  test('Malformed Bearer token returns clean 401 without process crash', async () => {
+  it('Malformed Bearer token returns clean 401 without process crash', async () => {
     const res = await request(app)
-      .get('/api/auth/profile')
-      .set('Authorization', 'Bearer malformed_token_123');
-    expect(res.statusCode).toBe(401);
-    expect(res.body.message).toMatch(/not authorized, token failed/i);
+      .get('/api/journals')
+      .set('Authorization', 'Bearer invalidtoken123');
+
+    expect(res.status).toBe(401);
+    expect(res.body).toEqual({ message: 'Not authorized, token failed' });
   });
 
-  test('Expired Bearer token returns clean 401 without process crash', async () => {
-    const expiredToken = jwt.sign({ userId: '507f1f77bcf86cd799439011' }, secret, { expiresIn: '-1s' });
+  it('Expired Bearer token returns clean 401 without process crash', async () => {
+    const expiredToken = jwt.sign(
+      { userId: '507f1f77bcf86cd799439011' },
+      process.env.JWT_SECRET || 'test_jwt_secret_only',
+      { expiresIn: '-1s' }
+    );
+
     const res = await request(app)
-      .get('/api/auth/profile')
+      .get('/api/journals')
       .set('Authorization', `Bearer ${expiredToken}`);
-    expect(res.statusCode).toBe(401);
-    expect(res.body.message).toMatch(/not authorized, token failed/i);
+
+    expect(res.status).toBe(401);
+    expect(res.body).toEqual({ message: 'Not authorized, token failed' });
   });
 });
