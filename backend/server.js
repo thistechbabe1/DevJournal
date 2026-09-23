@@ -1,7 +1,6 @@
 require('dotenv').config();
 const connectDB = require('./config/db');
 const app = require('./app');
-const { startKeepAlive, stopKeepAlive } = require('./services/keepAliveService');
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error('UNHANDLED REJECTION! Shutting down...', reason);
@@ -13,15 +12,6 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-const gracefulShutdown = () => {
-  console.log('Shutting down server...');
-  stopKeepAlive();
-  process.exit(0);
-};
-
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
-
 (async () => {
   try {
     await connectDB();
@@ -31,7 +21,6 @@ process.on('SIGINT', gracefulShutdown);
 
     app.listen(PORT, () => {
       console.log(`Server is LIVE and listening on port ${PORT}`);
-      startKeepAlive();
     });
 
   } catch (error) {

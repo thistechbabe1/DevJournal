@@ -1,23 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppComponent } from './app.component';
-import { KeepAliveService } from './services/keep-alive.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('AppComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [RouterTestingModule, HttpClientTestingModule],
+    imports: [RouterTestingModule],
     declarations: [AppComponent],
-    providers: [
-      {
-        provide: KeepAliveService,
-        useValue: {
-          startKeepAlive: () => {},
-          stopKeepAlive: () => {},
-        }
-      }
-    ],
     schemas: [NO_ERRORS_SCHEMA]
   }));
 

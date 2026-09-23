@@ -1,17 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { KeepAliveService } from './services/keep-alive.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'DevJournal';
-
-  constructor(private keepAliveService: KeepAliveService) {}
-
-  ngOnInit(): void {
-    this.keepAliveService.startKeepAlive();
-  }
 }

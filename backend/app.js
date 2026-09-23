@@ -60,18 +60,6 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-const healthCheckHandler = (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    uptime: Math.floor(process.uptime()),
-    timestamp: new Date().toISOString(),
-    service: 'DevJournal Backend API'
-  });
-};
-
-app.get('/health', healthCheckHandler);
-app.get('/api/health', healthCheckHandler);
-
 app.use(errorHandler);
 
 module.exports = app;
