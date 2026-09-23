@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AppComponent } from './app.component';
 import { KeepAliveService } from './services/keep-alive.service';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('AppComponent', () => {
   beforeEach(() => TestBed.configureTestingModule({
@@ -16,7 +17,8 @@ describe('AppComponent', () => {
           stopKeepAlive: () => {},
         }
       }
-    ]
+    ],
+    schemas: [NO_ERRORS_SCHEMA]
   }));
 
   it('should create the app', () => {
@@ -31,10 +33,10 @@ describe('AppComponent', () => {
     expect(app.title).toEqual('DevJournal');
   });
 
-  it('should render title', () => {
+  it('should render router-outlet', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('DevJournal app is running!');
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
   });
 });

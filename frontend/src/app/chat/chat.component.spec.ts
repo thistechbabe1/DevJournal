@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { FormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ChatComponent } from './chat.component';
 
 describe('ChatComponent', () => {
@@ -8,7 +10,9 @@ describe('ChatComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ChatComponent]
+      imports: [FormsModule, HttpClientTestingModule],
+      declarations: [ChatComponent],
+      schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(ChatComponent);
     component = fixture.componentInstance;
