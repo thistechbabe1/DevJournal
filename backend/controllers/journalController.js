@@ -1,49 +1,53 @@
 const Journal = require("../models/Journal");
 
+const ALLOWED_FIELDS = [
+  "title",
+  "content",
+  "category",
+  "date",
+  "tags",
+  "imageUrl",
+  "relatedLinks",
+  "notes",
+  "reactions",
+  "status",
+];
+
+const sanitizeJournalBody = (body) => {
+  const sanitized = {};
+  ALLOWED_FIELDS.forEach((field) => {
+    if (body[field] !== undefined) {
+      sanitized[field] = body[field];
+    }
+  });
+  return sanitized;
+};
+
 const getUserIdFromReq = (req) => {
-  return req.user ? req.user.id : null;
+  return req.user ? (req.user._id || req.user.id) : null;
 };
 
 exports.createJournal = async (req, res) => {
   try {
-    const {
-      title,
-      content,
-      imageUrl,
-      tags,
-      relatedLinks,
-      notes,
-      reactions,
-      category,
-    } = req.body;
-    const status = req.body.status || "draft";
+    if (!req.user) {
+      return res.status(401).json({
+        message: "Unauthorized: User not logged in or token invalid.",
+      });
+    }
 
+    const { title, content } = req.body;
     if (!title || !content) {
       return res
         .status(400)
         .json({ message: "Title and content are required." });
     }
 
-    if (!req.user) {
-      return res
-        .status(401)
-        .json({
-          message: "Unauthorized: User not logged in or token invalid.",
-        });
-    }
-
     const userId = getUserIdFromReq(req);
+    const sanitized = sanitizeJournalBody(req.body);
 
     const journalData = {
-      title,
-      content,
-      imageUrl,
-      tags,
-      relatedLinks,
-      notes,
-      reactions,
-      category,
-      status: status,
+      ...sanitized,
+      status: sanitized.status || "draft",
       user: userId,
     };
 
@@ -71,11 +75,9 @@ exports.createJournal = async (req, res) => {
 exports.getJournals = async (req, res) => {
   try {
     if (!req.user) {
-      return res
-        .status(401)
-        .json({
-          message: "Unauthorized: User not logged in or token invalid.",
-        });
+      return res.status(401).json({
+        message: "Unauthorized: User not logged in or token invalid.",
+      });
     }
     const userId = getUserIdFromReq(req);
 
@@ -93,17 +95,15 @@ exports.getJournals = async (req, res) => {
 exports.getJournal = async (req, res) => {
   try {
     if (!req.user) {
-      return res
-        .status(401)
-        .json({
-          message: "Unauthorized: User not logged in or token invalid.",
-        });
+      return res.status(401).json({
+        message: "Unauthorized: User not logged in or token invalid.",
+      });
     }
     const userId = getUserIdFromReq(req);
 
-    const journal = await Journal.findById(req.params.id);
+    const journal = await Journal.findOne({ _id: req.params.id, user: userId });
 
-    if (!journal || journal.user.toString() !== userId.toString()) {
+    if (!journal) {
       return res
         .status(404)
         .json({ message: "Journal not found or unauthorized" });
@@ -125,26 +125,25 @@ exports.getJournal = async (req, res) => {
 exports.updateJournal = async (req, res) => {
   try {
     if (!req.user) {
-      return res
-        .status(401)
-        .json({
-          message: "Unauthorized: User not logged in or token invalid.",
-        });
+      return res.status(401).json({
+        message: "Unauthorized: User not logged in or token invalid.",
+      });
     }
     const userId = getUserIdFromReq(req);
+    const sanitized = sanitizeJournalBody(req.body);
 
-    const journal = await Journal.findById(req.params.id);
+    const updated = await Journal.findOneAndUpdate(
+      { _id: req.params.id, user: userId },
+      sanitized,
+      { new: true, runValidators: true }
+    );
 
-    if (!journal || journal.user.toString() !== userId.toString()) {
+    if (!updated) {
       return res
         .status(404)
         .json({ message: "Journal not found or unauthorized" });
     }
 
-    const updated = await Journal.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
     res.json(updated);
   } catch (err) {
     if (err.name === "ValidationError") {
@@ -167,23 +166,23 @@ exports.updateJournal = async (req, res) => {
 exports.deleteJournal = async (req, res) => {
   try {
     if (!req.user) {
-      return res
-        .status(401)
-        .json({
-          message: "Unauthorized: User not logged in or token invalid.",
-        });
+      return res.status(401).json({
+        message: "Unauthorized: User not logged in or token invalid.",
+      });
     }
     const userId = getUserIdFromReq(req);
 
-    const journal = await Journal.findById(req.params.id);
+    const deleted = await Journal.findOneAndDelete({
+      _id: req.params.id,
+      user: userId,
+    });
 
-    if (!journal || journal.user.toString() !== userId.toString()) {
+    if (!deleted) {
       return res
         .status(404)
         .json({ message: "Journal not found or unauthorized" });
     }
 
-    await Journal.findByIdAndDelete(req.params.id);
     res.status(204).send();
   } catch (err) {
     if (err.name === "CastError" && err.path === "_id") {

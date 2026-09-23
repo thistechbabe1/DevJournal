@@ -1,6 +1,17 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+
+const generateToken = (user) => {
+  const payload = {
+    id: user._id.toString(),
+    userId: user._id.toString(),
+    email: user.email,
+    name: user.name,
+  };
+  const expiresIn = process.env.JWT_EXPIRES_IN || "24h";
+  return jwt.sign(payload, process.env.JWT_SECRET || "dev_secret", { expiresIn });
+};
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -16,16 +27,7 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        email: user.email,
-        name: user.name,
-        createdAt: user.createdAt.toISOString()
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" }
-    );
+    const token = generateToken(user);
 
     res.json({ token, message: "Login successful" });
   } catch (error) {
@@ -53,15 +55,7 @@ const registerUser = async (req, res) => {
     const user = new User({ name, email, password });
     await user.save();
 
-    const token = jwt.sign(
-      {
-        userId: user._id,
-        email: user.email,
-        name: user.name,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const token = generateToken(user);
 
     res.status(201).json({ token, message: "Registration successful" });
   } catch (error) {
@@ -85,7 +79,7 @@ const registerUser = async (req, res) => {
 
 const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.user._id || req.user.id).select('-password');
 
     if (user) {
       res.json({
@@ -105,7 +99,7 @@ const updateUserProfile = async (req, res) => {
   const { name, email, currentPassword, newPassword } = req.body;
 
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id || req.user.id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -130,15 +124,7 @@ const updateUserProfile = async (req, res) => {
 
     const updatedUser = await user.save();
 
-    const token = jwt.sign(
-      {
-        userId: updatedUser._id,
-        email: updatedUser.email,
-        name: updatedUser.name,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const token = generateToken(updatedUser);
 
     res.json({
       message: "Profile updated successfully",
@@ -161,4 +147,5 @@ module.exports = {
   registerUser,
   getUserProfile,
   updateUserProfile,
+  generateToken,
 };

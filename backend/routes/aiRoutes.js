@@ -1,17 +1,18 @@
 const express = require('express');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const protect = require('../middleware/authMiddleware');
 const router = express.Router();
 
 const geminiApiKey = process.env.GEMINI_API_KEY;
 
-if (!geminiApiKey) {
+if (!geminiApiKey && process.env.NODE_ENV !== 'test') {
     console.error('SERVER ERROR: GEMINI_API_KEY is not set in environment variables! AI features will not work.');
 }
 
-const genAI = new GoogleGenerativeAI(geminiApiKey);
+const genAI = new GoogleGenerativeAI(geminiApiKey || 'dummy_api_key_for_initialization');
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
-router.post('/chat', async (req, res) => {
+router.post('/chat', protect, async (req, res) => {
     const { message } = req.body;
 
     if (!message) {
@@ -29,7 +30,7 @@ router.post('/chat', async (req, res) => {
     }
 });
 
-router.post('/journal-insights', async (req, res) => {
+router.post('/journal-insights', protect, async (req, res) => {
     const { journalEntryContent } = req.body;
 
     if (!journalEntryContent) {
