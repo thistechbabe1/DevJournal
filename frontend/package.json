@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "dev": "ng serve",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
@@ -30,9 +31,6 @@
     "jwt-decode": "^4.0.0",
     "marked": "^4.3.0",
     "ngx-markdown": "^16.0.0",
-    "ngx-quill": "^23.0.0",
-    "nodemon": "^3.1.10",
-    "quill": "^2.0.0",
     "rxjs": "~7.8.0",
     "tinymce": "^7.9.1",
     "tslib": "^2.3.0",
@@ -40,6 +38,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.2.0",
+    "@angular-devkit/core": "^16.2.0",
     "@angular/cli": "~16.2.0",
     "@angular/compiler-cli": "^16.2.0",
     "@types/jasmine": "~4.3.0",

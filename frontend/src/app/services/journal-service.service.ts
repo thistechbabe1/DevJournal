@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 import { Journal } from '../models/journal.model';
 import { environment } from '../../environments/environment';
 
@@ -11,17 +10,7 @@ import { environment } from '../../environments/environment';
 export class JournalService {
   private apiUrl = `${environment.apiUrl}/journals`;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
-
-  private getAuthHeaders(): HttpHeaders {
-    const token = this.authService.getToken();
-    if (token) {
-      return new HttpHeaders({
-        Authorization: `Bearer ${token}`,
-      });
-    }
-    return new HttpHeaders();
-  }
+  constructor(private http: HttpClient) {}
 
   getAllJournals(status?: 'draft' | 'published'): Observable<Journal[]> {
     let params = new HttpParams();
@@ -36,40 +25,28 @@ export class JournalService {
   }
 
   getDraftJournals(): Observable<Journal[]> {
-    return this.http.get<Journal[]>(`${this.apiUrl}?status=draft`, {
-      headers: this.getAuthHeaders(),
-    });
+    return this.http.get<Journal[]>(`${this.apiUrl}?status=draft`);
   }
 
   getJournalById(id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`, {
-      headers: this.getAuthHeaders(),
-    });
+    return this.http.get(`${this.apiUrl}/${id}`);
   }
 
   createJournal(data: any): Observable<any> {
-    return this.http.post(this.apiUrl, data, {
-      headers: this.getAuthHeaders(),
-    });
+    return this.http.post(this.apiUrl, data);
   }
 
   updateJournal(id: string, journal: Journal): Observable<Journal> {
-    return this.http.put<Journal>(`${this.apiUrl}/${id}`, journal, {
-      headers: this.getAuthHeaders(),
-    });
+    return this.http.put<Journal>(`${this.apiUrl}/${id}`, journal);
   }
 
   deleteJournal(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
-      headers: this.getAuthHeaders(),
-    });
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   uploadImage(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('image', file);
-    return this.http.post(`${this.apiUrl}/upload-image`, formData, {
-      headers: this.getAuthHeaders(),
-    });
+    return this.http.post(`${this.apiUrl}/upload-image`, formData);
   }
 }
