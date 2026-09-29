@@ -12,8 +12,7 @@ describe('AddJournalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule, EditorModule],
-      declarations: [AddJournalComponent],
+      imports: [ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule, EditorModule, AddJournalComponent],
       schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(AddJournalComponent);

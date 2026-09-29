@@ -11,8 +11,7 @@ describe('DashboardComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule, HttpClientTestingModule, RouterTestingModule, MatSnackBarModule],
-      declarations: [DashboardComponent]
+      imports: [FormsModule, HttpClientTestingModule, RouterTestingModule, MatSnackBarModule, DashboardComponent]
     });
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;

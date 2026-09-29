@@ -10,8 +10,7 @@ describe('RegisterComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule],
-      declarations: [RegisterComponent]
+      imports: [ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule, RegisterComponent]
     });
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;

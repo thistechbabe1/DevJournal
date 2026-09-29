@@ -11,8 +11,7 @@ describe('SettingsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule, ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule],
-      declarations: [SettingsComponent],
+      imports: [SettingsComponent, FormsModule, ReactiveFormsModule, HttpClientTestingModule, RouterTestingModule],
       schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(SettingsComponent);

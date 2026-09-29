@@ -4,6 +4,9 @@ import {
   ElementRef,
   AfterViewChecked,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MarkdownModule } from 'ngx-markdown';
 import { AiAssistantService } from '../services/ai-assistant.service';
 
 interface ChatMessage {
@@ -15,6 +18,8 @@ interface ChatMessage {
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, MarkdownModule],
 })
 export class ChatComponent implements AfterViewChecked {
   userMessage: string = '';

@@ -9,8 +9,7 @@ describe('JournalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      declarations: [JournalComponent]
+      imports: [HttpClientTestingModule, RouterTestingModule, JournalComponent]
     });
     fixture = TestBed.createComponent(JournalComponent);
     component = fixture.componentInstance;

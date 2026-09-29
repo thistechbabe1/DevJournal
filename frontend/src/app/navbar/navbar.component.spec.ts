@@ -9,8 +9,7 @@ describe('NavbarComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      declarations: [NavbarComponent]
+      imports: [HttpClientTestingModule, RouterTestingModule, NavbarComponent]
     });
     fixture = TestBed.createComponent(NavbarComponent);
     component = fixture.componentInstance;

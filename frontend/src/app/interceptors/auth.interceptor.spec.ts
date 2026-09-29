@@ -1,22 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
-import { AuthInterceptor } from './auth.interceptor';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './auth.interceptor';
 
-describe('AuthInterceptor', () => {
+describe('authInterceptor', () => {
   let http: HttpClient;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
     sessionStorage.clear();
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       providers: [
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: AuthInterceptor,
-          multi: true,
-        },
+        provideHttpClient(withInterceptors([authInterceptor])),
+        provideHttpClientTesting()
       ],
     });
 

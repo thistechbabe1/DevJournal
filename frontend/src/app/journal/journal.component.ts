@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { JournalService } from '../services/journal-service.service';
 import { Journal } from '../models/journal.model';
 import { environment } from '../../environments/environment';
@@ -7,7 +8,9 @@ import { environment } from '../../environments/environment';
 @Component({
   selector: 'app-journal',
   templateUrl: './journal.component.html',
-  styleUrls: ['./journal.component.scss']
+  styleUrls: ['./journal.component.scss'],
+  standalone: true,
+  imports: [CommonModule, RouterModule]
 })
 export class JournalComponent implements OnInit {
   journalEntries: Journal[] = [];

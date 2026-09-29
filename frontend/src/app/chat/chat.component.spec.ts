@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { MarkdownModule } from 'ngx-markdown';
 import { ChatComponent } from './chat.component';
 
 describe('ChatComponent', () => {
@@ -10,8 +11,7 @@ describe('ChatComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule, HttpClientTestingModule],
-      declarations: [ChatComponent],
+      imports: [ChatComponent, FormsModule, HttpClientTestingModule, MarkdownModule.forRoot()],
       schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(ChatComponent);

@@ -10,8 +10,7 @@ describe('ViewJournalComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule],
-      declarations: [ViewJournalComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule, ViewJournalComponent],
       schemas: [NO_ERRORS_SCHEMA]
     });
     fixture = TestBed.createComponent(ViewJournalComponent);

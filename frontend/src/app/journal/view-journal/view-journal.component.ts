@@ -1,5 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { JournalService } from '../../services/journal-service.service';
 import { Journal } from '../../models/journal.model';
 import jsPDF from 'jspdf';
@@ -7,11 +9,14 @@ import { environment } from '../../../environments/environment';
 import { AiAssistantService } from '../../services/ai-assistant.service';
 import html2canvas from 'html2canvas';
 import * as html2pdf from 'html2pdf.js';
+import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-view-journal',
   templateUrl: './view-journal.component.html',
   styleUrls: ['./view-journal.component.scss'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule, SafeHtmlPipe],
 })
 export class ViewJournalComponent implements OnInit {
   journalId: string | null = null;

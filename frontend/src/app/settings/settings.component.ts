@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { JournalService } from '../services/journal-service.service';
 import { Journal } from '../models/journal.model';
-import { Router } from '@angular/router';
 import { UserProfile } from '../models/UserProfile.model';
 import { Subscription } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -10,7 +12,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+  styleUrls: ['./settings.component.scss'],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule]
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   userName: string = '';
