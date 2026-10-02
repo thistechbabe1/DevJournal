@@ -12,51 +12,63 @@
             formControlName="email"
             placeholder="email@gmail.com"
             required
-          />
-        </div>
-        <div *ngIf="form.get('email')?.hasError('required') && form.get('email')?.touched" class="error-message">
-          Email is required.
-        </div>
-        <div *ngIf="form.get('email')?.hasError('email') && !form.get('email')?.hasError('required') && form.get('email')?.touched" class="error-message">
-          Enter a valid email.
-        </div>
+            />
+          </div>
+          @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+            <div class="error-message">
+              Email is required.
+            </div>
+          }
+          @if (form.get('email')?.hasError('email') && !form.get('email')?.hasError('required') && form.get('email')?.touched) {
+            <div class="error-message">
+              Enter a valid email.
+            </div>
+          }
 
-        <div class="custom-input-field animate__animated animate__fadeInLeft animate__delay-0-2s">
-          <i class="fas fa-lock"></i>
-          <input
-            [type]="passwordFieldType"
-            id="password"
-            formControlName="password"
-            placeholder="Enter your password"
-            required
-          />
-          <i class="fas" [ngClass]="{'fa-eye-slash': passwordFieldType === 'password', 'fa-eye': passwordFieldType === 'text'}" (click)="togglePasswordVisibility('password')"></i>
-        </div>
-        <div *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched" class="error-message">
-          Password is required.
-        </div>
-        <div *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched" class="error-message">
-          Password must be at least 6 characters.
-        </div>
+          <div class="custom-input-field animate__animated animate__fadeInLeft animate__delay-0-2s">
+            <i class="fas fa-lock"></i>
+            <input
+              [type]="passwordFieldType"
+              id="password"
+              formControlName="password"
+              placeholder="Enter your password"
+              required
+              />
+              <i class="fas" [ngClass]="{'fa-eye-slash': passwordFieldType === 'password', 'fa-eye': passwordFieldType === 'text'}" (click)="togglePasswordVisibility('password')"></i>
+            </div>
+            @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+              <div class="error-message">
+                Password is required.
+              </div>
+            }
+            @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
+              <div class="error-message">
+                Password must be at least 6 characters.
+              </div>
+            }
 
-        <button type="submit" class="btn-custom-primary w-100 animate__animated animate__zoomIn" [disabled]="form.invalid || isLoading">
-          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Login
-        </button>
-      </form>
+            <button type="submit" class="btn-custom-primary w-100 animate__animated animate__zoomIn" [disabled]="form.invalid || isLoading">
+              @if (isLoading) {
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              }
+              Login
+            </button>
+          </form>
 
-      <p class="account-prompt animate__animated animate__fadeInUp animate__delay-1s">
-        Don't have an account?
-        <a routerLink="/register" class="text-link">Sign up</a>
-      </p>
+          <p class="account-prompt animate__animated animate__fadeInUp animate__delay-1s">
+            Don't have an account?
+            <a routerLink="/register" class="text-link">Sign up</a>
+          </p>
 
-      <div *ngIf="errorMessage" class="alert alert-danger text-center mt-3 animate__animated animate__fadeIn animate__delay-1-2s" role="alert">
-        {{ errorMessage }}
+          @if (errorMessage) {
+            <div class="alert alert-danger text-center mt-3 animate__animated animate__fadeIn animate__delay-1-2s" role="alert">
+              {{ errorMessage }}
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <img src="assets/images/login.png" alt="3D character working on laptop" class="character-image animate__animated animate__fadeInRight animate__delay-0-5s">
       </div>
     </div>
-  </div>
-
-  <div class="right-panel">
-    <img src="assets/images/login.png" alt="3D character working on laptop" class="character-image animate__animated animate__fadeInRight animate__delay-0-5s">
-  </div>
-</div>

@@ -6,37 +6,40 @@
     </header>
 
     <main class="messages-area" #messageContainer>
-      <div *ngFor="let msg of messages" class="message-row" [ngClass]="'sender-' + msg.sender">
-        <div class="avatar">
-          <i [ngClass]="msg.sender === 'ai' ? 'fas fa-robot' : 'fas fa-user'"></i>
-        </div>
-
-        <div class="message-content">
-          <div class="message-bubble">
-            <markdown [data]="msg.text" ngPreserveWhitespaces></markdown>
-
-            <button
-              *ngIf="msg.sender === 'ai' && containsCode(msg.text)"
-              class="copy-code-btn"
-              title="Copy code"
-              (click)="copyCode($event, msg.text)"
-            >
-              <i class="fas fa-copy"></i>
-            </button>
+      @for (msg of messages; track $index) {
+        <div class="message-row" [ngClass]="'sender-' + msg.sender">
+          <div class="avatar">
+            <i [ngClass]="msg.sender === 'ai' ? 'fas fa-robot' : 'fas fa-user'"></i>
           </div>
-        </div>
-      </div>
-
-      <div *ngIf="isLoading" class="message-row sender-ai">
-        <div class="avatar"><i class="fas fa-robot"></i></div>
-        <div class="message-content">
-          <div class="message-bubble">
-            <div class="typing-indicator">
-              <span></span><span></span><span></span>
+          <div class="message-content">
+            <div class="message-bubble">
+              <markdown [data]="msg.text" ngPreserveWhitespaces></markdown>
+              @if (msg.sender === 'ai' && containsCode(msg.text)) {
+                <button
+                  class="copy-code-btn"
+                  title="Copy code"
+                  (click)="copyCode($event, msg.text)"
+                  >
+                  <i class="fas fa-copy"></i>
+                </button>
+              }
             </div>
           </div>
         </div>
-      </div>
+      }
+
+      @if (isLoading) {
+        <div class="message-row sender-ai">
+          <div class="avatar"><i class="fas fa-robot"></i></div>
+          <div class="message-content">
+            <div class="message-bubble">
+              <div class="typing-indicator">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
     </main>
 
     <footer class="chat-input-area">
@@ -54,7 +57,7 @@
         (click)="sendMessage()"
         [disabled]="isLoading || !userMessage.trim()"
         title="Send Message"
-      >
+        >
         <i class="fas fa-paper-plane"></i>
       </button>
     </footer>

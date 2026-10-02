@@ -20,62 +20,66 @@
             last activity was on
             <span class="highlight">
               {{ formattedLastActivityDate }}</span
-            >
-          </p>
-        </div>
-        <div class="visual-placeholder">
-          <img src="assets/images/placeholder_journal.jpeg" alt="Placeholder Image" />
-        </div>
-      </div>
-    </div>
-
-    <div class="ai-tips-section">
-      <div class="tip-card">
-        <p class="card-title">Dev Tip of the Day</p>
-        <p class="tip-text">{{ aiTip }}</p>
-        <div class="tip-actions">
-          <button class="btn-get-new-tip" (click)="getNewAiTip()">
-            New Tip
-          </button>
+              >
+            </p>
+          </div>
+          <div class="visual-placeholder">
+            <img src="assets/images/placeholder_journal.jpeg" alt="Placeholder Image" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="quick-entry-section">
-      <div class="quick-entry-card">
-        <p class="card-title">Quick Note</p>
-        <textarea
-          class="form-control"
-          rows="3"
-          placeholder="What did you learn or accomplish today?"
-          [(ngModel)]="quickEntryContent"
-        ></textarea>
-        <div class="quick-entry-actions">
-          <button class="btn btn-primary" (click)="submitQuickEntry()">
-            Save Note
-          </button>
-          <button class="btn btn-secondary" routerLink="/add-journal">
-            Full Entry
-          </button>
+      <div class="ai-tips-section">
+        <div class="tip-card">
+          <p class="card-title">Dev Tip of the Day</p>
+          <p class="tip-text">{{ aiTip }}</p>
+          <div class="tip-actions">
+            <button class="btn-get-new-tip" (click)="getNewAiTip()">
+              New Tip
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <h2 class="section-title">Recent Activity</h2>
-
-    <div class="recent-activity-list">
-      <div *ngFor="let activity of activities" class="activity-item">
-        <p class="activity-title">{{ activity.title }}</p>
-        <p class="activity-entry">{{ activity.entry }}</p>
-        <p class="activity-date">
-          {{ activity.createdAt | date : "mediumDate" }}
-        </p>
+      <div class="quick-entry-section">
+        <div class="quick-entry-card">
+          <p class="card-title">Quick Note</p>
+          <textarea
+            class="form-control"
+            rows="3"
+            placeholder="What did you learn or accomplish today?"
+            [(ngModel)]="quickEntryContent"
+          ></textarea>
+          <div class="quick-entry-actions">
+            <button class="btn btn-primary" (click)="submitQuickEntry()">
+              Save Note
+            </button>
+            <button class="btn btn-secondary" routerLink="/add-journal">
+              Full Entry
+            </button>
+          </div>
+        </div>
       </div>
-      <div *ngIf="activities.length === 0" class="no-activity-message">
-        <p class="text-muted small">
-          No recent activity found. Start writing your first journal!
-        </p>
+
+      <h2 class="section-title">Recent Activity</h2>
+
+      <div class="recent-activity-list">
+        @for (activity of activities; track activity._id ?? $index) {
+          <div class="activity-item">
+            <p class="activity-title">{{ activity.title }}</p>
+            <p class="activity-entry">{{ activity.entry }}</p>
+            <p class="activity-date">
+              {{ activity.createdAt | date : "mediumDate" }}
+            </p>
+          </div>
+        }
+        @if (activities.length === 0) {
+          <div class="no-activity-message">
+            <p class="text-muted small">
+              No recent activity found. Start writing your first journal!
+            </p>
+          </div>
+        }
       </div>
     </div>
   </div>
-</div>

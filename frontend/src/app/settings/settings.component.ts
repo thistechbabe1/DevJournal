@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -14,7 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule]
+  imports: [FormsModule, RouterModule]
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   userName: string = '';

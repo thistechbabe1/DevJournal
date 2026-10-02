@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EditorModule } from '@tinymce/tinymce-angular';
@@ -13,7 +13,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   templateUrl: './add-journal.component.html',
   styleUrls: ['./add-journal.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, EditorModule, RouterModule],
+  imports: [ReactiveFormsModule, EditorModule, RouterModule],
 })
 export class AddJournalComponent implements OnInit {
   journalForm!: FormGroup;

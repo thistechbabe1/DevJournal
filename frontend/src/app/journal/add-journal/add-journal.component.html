@@ -1,6 +1,6 @@
 <div
   class="container-fluid py-5 d-flex justify-content-center add-journal-wrapper"
->
+  >
   <div class="journal-form w-100">
     <div class="journal-header-section">
       <h1 class="journal-page-title">
@@ -18,26 +18,31 @@
           formControlName="title"
           autocomplete="off"
           placeholder="Enter journal title"
-        />
-        <p
-          *ngIf="f['title'].invalid && f['title'].touched"
-          class="error-message"
-        >
-          <span *ngIf="f['title'].errors?.['required']"
-            >Title is required.</span
-          >
-          <span *ngIf="f['title'].errors?.['minlength']"
-            >Title must be at least 3 characters long.</span
-          >
-        </p>
-      </div>
+          />
+          @if (f['title'].invalid && f['title'].touched) {
+            <p
+              class="error-message"
+              >
+              @if (f['title'].errors?.['required']) {
+                <span
+                  >Title is required.</span
+                  >
+              }
+              @if (f['title'].errors?.['minlength']) {
+                <span
+                  >Title must be at least 3 characters long.</span
+                  >
+                }
+              </p>
+            }
+          </div>
 
-      <div class="form-group">
-        <label for="content">Content</label>
-        <editor
-          apiKey="x6br69syaewh7l8pxff1clr1xpfmvbeyhg6lrqf55n84ze8e"
-          id="content"
-          formControlName="content"
+          <div class="form-group">
+            <label for="content">Content</label>
+            <editor
+              apiKey="x6br69syaewh7l8pxff1clr1xpfmvbeyhg6lrqf55n84ze8e"
+              id="content"
+              formControlName="content"
           [init]="{
             height: 350,
             menubar: true,
@@ -57,190 +62,214 @@
               'fullscreen preview | emoticons charmap | insertdatetime | table | help | code',
             toolbar_mode: 'wrap',
           }"
-        ></editor>
-        <p
-          *ngIf="f['content'].invalid && f['content'].touched"
-          class="error-message"
-        >
-          <span *ngIf="f['content'].errors?.['required']"
-            >Content is required.</span
-          >
-          <span *ngIf="f['content'].errors?.['minlength']"
-            >Content must be at least 10 characters long.</span
-          >
-        </p>
-      </div>
+            ></editor>
+            @if (f['content'].invalid && f['content'].touched) {
+              <p
+                class="error-message"
+                >
+                @if (f['content'].errors?.['required']) {
+                  <span
+                    >Content is required.</span
+                    >
+                  }
+                  @if (f['content'].errors?.['minlength']) {
+                    <span
+                      >Content must be at least 10 characters long.</span
+                      >
+                    }
+                  </p>
+                }
+              </div>
 
-      <div class="form-group">
-        <label for="category">Category</label>
-        <input
-          type="text"
-          id="category"
-          class="form-control"
-          formControlName="category"
-          autocomplete="off"
-          placeholder="e.g., Personal, Work, Ideas"
-        />
-        <p
-          *ngIf="f['category'].invalid && f['category'].touched"
-          class="error-message"
-        >
-          Category is required.
-        </p>
-      </div>
+              <div class="form-group">
+                <label for="category">Category</label>
+                <input
+                  type="text"
+                  id="category"
+                  class="form-control"
+                  formControlName="category"
+                  autocomplete="off"
+                  placeholder="e.g., Personal, Work, Ideas"
+                  />
+                  @if (f['category'].invalid && f['category'].touched) {
+                    <p
+                      class="error-message"
+                      >
+                      Category is required.
+                    </p>
+                  }
+                </div>
 
-      <div class="form-group">
-        <label for="date">Date</label>
-        <input
-          type="date"
-          id="date"
-          class="form-control"
-          formControlName="date"
-        />
-        <p *ngIf="f['date'].invalid && f['date'].touched" class="error-message">
-          Date is required.
-        </p>
-      </div>
+                <div class="form-group">
+                  <label for="date">Date</label>
+                  <input
+                    type="date"
+                    id="date"
+                    class="form-control"
+                    formControlName="date"
+                    />
+                    @if (f['date'].invalid && f['date'].touched) {
+                      <p class="error-message">
+                        Date is required.
+                      </p>
+                    }
+                  </div>
 
-      <h5 class="optional-header">Optional</h5>
+                  <h5 class="optional-header">Optional</h5>
 
-      <div class="upload-section">
-        <div
-          class="upload-box text-center rounded"
-          (click)="fileInput.click()"
-          (dragover)="onDragOver($event)"
-          (drop)="onDrop($event)"
-        >
-          <p class="text-white fw-bold">Upload Image</p>
-          <p class="text-white-50">
-            Drag and drop an image here, or click to select one.
-          </p>
-          <input
-            type="file"
-            #fileInput
-            style="display: none"
-            (change)="onFileSelected($event)"
-            accept="image/*"
-          />
-          <button
-            type="button"
-            class="btn btn-dark mt-3"
-            (click)="fileInput.click(); $event.stopPropagation()"
-          >
-            Choose File
-          </button>
-          <div *ngIf="imageUrl" class="mt-3 image-preview-container">
-            <img
-              [src]="imageUrl"
-              alt="Selected Image Preview"
-              class="img-thumbnail img-fluid"
-            />
-            <button
-              type="button"
-              class="btn clear-image-btn"
+                  <div class="upload-section">
+                    <div
+                      class="upload-box text-center rounded"
+                      (click)="fileInput.click()"
+                      (dragover)="onDragOver($event)"
+                      (drop)="onDrop($event)"
+                      >
+                      <p class="text-white fw-bold">Upload Image</p>
+                      <p class="text-white-50">
+                        Drag and drop an image here, or click to select one.
+                      </p>
+                      <input
+                        type="file"
+                        #fileInput
+                        style="display: none"
+                        (change)="onFileSelected($event)"
+                        accept="image/*"
+                        />
+                        <button
+                          type="button"
+                          class="btn btn-dark mt-3"
+                          (click)="fileInput.click(); $event.stopPropagation()"
+                          >
+                          Choose File
+                        </button>
+                        @if (imageUrl) {
+                          <div class="mt-3 image-preview-container">
+                            <img
+                              [src]="imageUrl"
+                              alt="Selected Image Preview"
+                              class="img-thumbnail img-fluid"
+                              />
+                              <button
+                                type="button"
+                                class="btn clear-image-btn"
               (click)="
                 imageUrl = null; selectedFile = null; $event.stopPropagation()
               "
-            >
-              <i class="fas fa-times-circle"></i>
-            </button>
-          </div>
-        </div>
-      </div>
+                                >
+                                <i class="fas fa-times-circle"></i>
+                              </button>
+                            </div>
+                          }
+                        </div>
+                      </div>
 
-      <div class="form-group">
-        <label for="tags">Tags (comma-separated)</label>
-        <input
-          type="text"
-          id="tags"
-          class="form-control"
-          formControlName="tags"
-          autocomplete="off"
-          placeholder="e.g., personal, work, ideas"
-        />
-      </div>
+                      <div class="form-group">
+                        <label for="tags">Tags (comma-separated)</label>
+                        <input
+                          type="text"
+                          id="tags"
+                          class="form-control"
+                          formControlName="tags"
+                          autocomplete="off"
+                          placeholder="e.g., personal, work, ideas"
+                          />
+                        </div>
 
-      <div class="form-group">
-        <label for="relatedLinks">Related Links (comma-separated URLs)</label>
-        <input
-          type="text"
-          id="relatedLinks"
-          class="form-control"
-          formControlName="relatedLinks"
-          autocomplete="off"
-          placeholder="e.g., https://example.com/article"
-        />
-      </div>
+                        <div class="form-group">
+                          <label for="relatedLinks">Related Links (comma-separated URLs)</label>
+                          <input
+                            type="text"
+                            id="relatedLinks"
+                            class="form-control"
+                            formControlName="relatedLinks"
+                            autocomplete="off"
+                            placeholder="e.g., https://example.com/article"
+                            />
+                          </div>
 
-      <div
-        *ngIf="isSaving && !successMessage && !errorMessage"
-        class="info-message loading-state"
-      >
-        <div class="spinner-border text-primary-purple" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-        <p class="mt-3">Saving journal...</p>
-      </div>
-      <div *ngIf="successMessage" class="alert alert-success" role="alert">
-        {{ successMessage }}
-      </div>
-      <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
-        {{ errorMessage }}
-      </div>
+                          @if (isSaving && !successMessage && !errorMessage) {
+                            <div
+                              class="info-message loading-state"
+                              >
+                              <div class="spinner-border text-primary-purple" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                              </div>
+                              <p class="mt-3">Saving journal...</p>
+                            </div>
+                          }
+                          @if (successMessage) {
+                            <div class="alert alert-success" role="alert">
+                              {{ successMessage }}
+                            </div>
+                          }
+                          @if (errorMessage) {
+                            <div class="alert alert-danger" role="alert">
+                              {{ errorMessage }}
+                            </div>
+                          }
 
-      <div class="action-buttons">
-        <button
-          type="button"
-          class="btn-custom-secondary"
-          (click)="onCancel()"
-          [disabled]="isSaving"
-        >
-          Cancel
-        </button>
+                          <div class="action-buttons">
+                            <button
+                              type="button"
+                              class="btn-custom-secondary"
+                              (click)="onCancel()"
+                              [disabled]="isSaving"
+                              >
+                              Cancel
+                            </button>
 
-        <button
-          *ngIf="journalForm.value.status === 'draft'"
-          type="button"
-          class="btn-custom-secondary"
-          (click)="onSaveDraft()"
-          [disabled]="isSaving"
-        >
-          <span *ngIf="isSaving && journalForm.value.status === 'draft'"
-            >Saving...</span
-          >
-          <span *ngIf="!isSaving">{{
-            isEditMode ? "Update Draft" : "Save as Draft"
-          }}</span>
-        </button>
+                            @if (journalForm.value.status === 'draft') {
+                              <button
+                                type="button"
+                                class="btn-custom-secondary"
+                                (click)="onSaveDraft()"
+                                [disabled]="isSaving"
+                                >
+                                @if (isSaving && journalForm.value.status === 'draft') {
+                                  <span
+                                    >Saving...</span
+                                    >
+                                }
+                                @if (!isSaving) {
+                                  <span>{{
+                                    isEditMode ? "Update Draft" : "Save as Draft"
+                                  }}</span>
+                                }
+                              </button>
+                            }
 
-        <span
-          class="tooltip-wrapper"
+                            <span
+                              class="tooltip-wrapper"
           [title]="
             journalForm.invalid
               ? 'Please fill out all required fields to publish.'
               : null
           "
-        >
-          <button
-            type="button"
-            class="btn-custom-primary"
-            (click)="onPublish()"
+                              >
+                              <button
+                                type="button"
+                                class="btn-custom-primary"
+                                (click)="onPublish()"
             [disabled]="
               isSaving ||
               (journalForm.invalid && (!isEditMode || journalForm.dirty))
             "
-          >
-            <span *ngIf="isSaving">Publishing...</span>
-            <span *ngIf="!isSaving">
-              {{
-                isEditMode && journalForm.value.status === "published"
-                  ? "Update Published Entry"
-                  : "Publish"
-              }}
-            </span>
-          </button>
-        </span>
-      </div>
-    </form>
-  </div>
-</div>
+                                >
+                                @if (isSaving) {
+                                  <span>Publishing...</span>
+                                }
+                                @if (!isSaving) {
+                                  <span>
+                                    {{
+                                    isEditMode && journalForm.value.status === "published"
+                                    ? "Update Published Entry"
+                                    : "Publish"
+                                    }}
+                                  </span>
+                                }
+                              </button>
+                            </span>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
