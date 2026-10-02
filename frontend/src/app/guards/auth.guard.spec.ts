@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { of, Observable } from 'rxjs';
 import { authGuard } from './auth.guard';
 import { AuthService } from '../services/auth.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('authGuard', () => {
   let authService: jasmine.SpyObj<AuthService>;
@@ -14,11 +15,13 @@ describe('authGuard', () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['isLoggedIn']);
 
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientTestingModule],
-      providers: [
-        { provide: AuthService, useValue: authSpy }
-      ]
-    });
+    imports: [RouterTestingModule],
+    providers: [
+        { provide: AuthService, useValue: authSpy },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     authService = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     router = TestBed.inject(Router);
