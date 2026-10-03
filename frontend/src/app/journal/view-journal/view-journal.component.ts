@@ -8,7 +8,7 @@ import jsPDF from 'jspdf';
 import { environment } from '../../../environments/environment';
 import { AiAssistantService } from '../../services/ai-assistant.service';
 import html2canvas from 'html2canvas';
-import * as html2pdf from 'html2pdf.js';
+import html2pdf from 'html2pdf.js';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 
 @Component({
