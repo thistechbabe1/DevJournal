@@ -15,11 +15,10 @@ interface ChatMessage {
 }
 
 @Component({
-  selector: 'app-chat',
-  templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.scss'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, MarkdownModule],
+    selector: 'app-chat',
+    templateUrl: './chat.component.html',
+    styleUrls: ['./chat.component.scss'],
+    imports: [CommonModule, FormsModule, MarkdownModule]
 })
 export class ChatComponent implements AfterViewChecked {
   userMessage: string = '';

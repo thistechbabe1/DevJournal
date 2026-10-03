@@ -6,11 +6,10 @@ import { Journal } from '../models/journal.model';
 import { environment } from '../../environments/environment';
 
 @Component({
-  selector: 'app-journal',
-  templateUrl: './journal.component.html',
-  styleUrls: ['./journal.component.scss'],
-  standalone: true,
-  imports: [CommonModule, RouterModule]
+    selector: 'app-journal',
+    templateUrl: './journal.component.html',
+    styleUrls: ['./journal.component.scss'],
+    imports: [CommonModule, RouterModule]
 })
 export class JournalComponent implements OnInit {
   journalEntries: Journal[] = [];

@@ -8,12 +8,11 @@ import { AuthService } from '../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatSnackBarModule],
-  providers: [DatePipe]
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss'],
+    imports: [CommonModule, FormsModule, RouterModule, MatSnackBarModule],
+    providers: [DatePipe]
 })
 export class DashboardComponent implements OnInit {
   userName: string = 'User';

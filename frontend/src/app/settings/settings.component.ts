@@ -10,11 +10,10 @@ import { Subscription } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss'],
-  standalone: true,
-  imports: [FormsModule, RouterModule]
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss'],
+    imports: [FormsModule, RouterModule]
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   userName: string = '';

@@ -12,11 +12,10 @@ import * as html2pdf from 'html2pdf.js';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';
 
 @Component({
-  selector: 'app-view-journal',
-  templateUrl: './view-journal.component.html',
-  styleUrls: ['./view-journal.component.scss'],
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, SafeHtmlPipe],
+    selector: 'app-view-journal',
+    templateUrl: './view-journal.component.html',
+    styleUrls: ['./view-journal.component.scss'],
+    imports: [CommonModule, FormsModule, RouterModule, SafeHtmlPipe]
 })
 export class ViewJournalComponent implements OnInit {
   journalId: string | null = null;

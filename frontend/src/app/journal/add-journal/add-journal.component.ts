@@ -9,11 +9,10 @@ import { environment } from '../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-add-journal',
-  templateUrl: './add-journal.component.html',
-  styleUrls: ['./add-journal.component.scss'],
-  standalone: true,
-  imports: [ReactiveFormsModule, EditorModule, RouterModule],
+    selector: 'app-add-journal',
+    templateUrl: './add-journal.component.html',
+    styleUrls: ['./add-journal.component.scss'],
+    imports: [ReactiveFormsModule, EditorModule, RouterModule]
 })
 export class AddJournalComponent implements OnInit {
   journalForm!: FormGroup;

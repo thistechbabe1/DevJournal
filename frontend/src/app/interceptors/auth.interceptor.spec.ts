@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './auth.interceptor';
+import { appConfig } from '../app.config';
 
 describe('authInterceptor', () => {
   let http: HttpClient;
@@ -45,4 +46,27 @@ describe('authInterceptor', () => {
     expect(req.request.headers.has('Authorization')).toBeFalse();
     req.flush([]);
   });
+
+  it('should attach Authorization header when configured via production appConfig.providers', () => {
+    TestBed.resetTestingModule();
+    sessionStorage.setItem('token', 'app-config-jwt-123');
+
+    TestBed.configureTestingModule({
+      providers: [
+        ...appConfig.providers,
+        provideHttpClientTesting()
+      ],
+    });
+
+    const appHttp = TestBed.inject(HttpClient);
+    const appHttpMock = TestBed.inject(HttpTestingController);
+
+    appHttp.get('/api/journals').subscribe();
+
+    const req = appHttpMock.expectOne('/api/journals');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer app-config-jwt-123');
+    req.flush([]);
+    appHttpMock.verify();
+  });
 });
+
