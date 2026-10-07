@@ -4,15 +4,15 @@
       <img src="assets/logo.svg" alt="DevJournal App Logo" class="app-logo" />
     </a>
 
-    @if (isLoggedIn) {
+    @if (isLoggedIn()) {
       <button
         class="navbar-toggler"
         type="button"
-        (click)="toggleNavbar()" [attr.aria-expanded]="!isCollapsed" aria-label="Toggle navigation"
+        (click)="toggleNavbar()" [attr.aria-expanded]="!isCollapsed()" aria-label="Toggle navigation"
         >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="navbar-collapse" [ngClass]="{'collapse': isCollapsed, 'show': !isCollapsed}" id="navbarNavContent">
+      <div class="navbar-collapse" [ngClass]="{'collapse': isCollapsed(), 'show': !isCollapsed()}" id="navbarNavContent">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
           <li class="nav-item">
             <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Home</a>

@@ -15,9 +15,9 @@ describe('AuthService', () => {
   beforeEach(() => {
     sessionStorage.clear();
     TestBed.configureTestingModule({
-    imports: [RouterTestingModule],
-    providers: [AuthService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [RouterTestingModule],
+      providers: [AuthService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
@@ -46,8 +46,11 @@ describe('AuthService', () => {
     req.flush({ message: 'Registration successful', token: 'mock-jwt-token' });
   });
 
-  it('should login user and save token to sessionStorage', () => {
+  it('should login user, save token to sessionStorage, and update auth & profile signals', () => {
     const loginCredentials = { email: 'alice@example.com', password: 'password123' };
+    expect(service.isAuthenticated()).toBeFalse();
+    expect(service.currentUserProfile()).toBeNull();
+    expect(service.userDisplayName()).toBeNull();
 
     service.login(loginCredentials).subscribe(res => {
       expect(res.token).toBe('mock-token');
@@ -57,18 +60,24 @@ describe('AuthService', () => {
     const loginReq = httpMock.expectOne(`${apiUrl}/auth/login`);
     expect(loginReq.request.method).toBe('POST');
     loginReq.flush({ token: 'mock-token', message: 'Login successful' });
+    expect(service.isAuthenticated()).toBeTrue();
 
     const profileReq = httpMock.expectOne(`${apiUrl}/auth/profile`);
     expect(profileReq.request.method).toBe('GET');
-    profileReq.flush({ id: '1', name: 'Alice', email: 'alice@example.com' });
+    profileReq.flush({ _id: '1', name: 'Alice', email: 'alice@example.com', createdAt: '2026-01-01', updatedAt: '2026-01-01' });
+    expect(service.currentUserProfile()?.name).toBe('Alice');
+    expect(service.userDisplayName()).toBe('Alice');
   });
 
-  it('should logout and clear token and profile', () => {
+  it('should logout and clear token and profile signals', () => {
     sessionStorage.setItem('token', 'sample-token');
     service.logout();
 
     expect(service.getToken()).toBeNull();
     expect(service.isLoggedInSnapshot()).toBeFalse();
+    expect(service.isAuthenticated()).toBeFalse();
     expect(service.getCurrentUserProfileSnapshot()).toBeNull();
+    expect(service.currentUserProfile()).toBeNull();
+    expect(service.userDisplayName()).toBeNull();
   });
 });

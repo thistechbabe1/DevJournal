@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -25,10 +25,30 @@ export class AuthService {
   private _currentUserProfile = new BehaviorSubject<UserProfile | null>(null);
   currentUserProfile$ = this._currentUserProfile.asObservable();
 
+  private readonly _loggedInSignal = signal<boolean>(false);
+  private readonly _currentUserProfileSignal = signal<UserProfile | null>(null);
+
+  readonly isAuthenticated = this._loggedInSignal.asReadonly();
+  readonly currentUserProfile = this._currentUserProfileSignal.asReadonly();
+  readonly userDisplayName = computed(() => {
+    const profile = this._currentUserProfileSignal();
+    return profile?.name || profile?.email || null;
+  });
+
   private apiURL = environment.apiUrl;
 
   constructor(private http: HttpClient, private router: Router) {
     this.loadTokenAndProfile();
+  }
+
+  private setLoggedInState(value: boolean): void {
+    this._loggedInSignal.set(value);
+    this.loggedIn.next(value);
+  }
+
+  private setUserProfileState(profile: UserProfile | null): void {
+    this._currentUserProfileSignal.set(profile);
+    this._currentUserProfile.next(profile);
   }
 
   private loadTokenAndProfile(): void {
@@ -40,7 +60,7 @@ export class AuthService {
 
         if (isValid) {
           this.token = savedToken;
-          this.loggedIn.next(true);
+          this.setLoggedInState(true);
           this.fetchUserProfile().subscribe({
             error: () => {
               this.logout();
@@ -53,8 +73,8 @@ export class AuthService {
         this.logout();
       }
     } else {
-      this.loggedIn.next(false);
-      this._currentUserProfile.next(null);
+      this.setLoggedInState(false);
+      this.setUserProfileState(null);
     }
   }
 
@@ -69,7 +89,7 @@ export class AuthService {
         tap((response) => {
           this.token = response.token;
           sessionStorage.setItem('token', response.token);
-          this.loggedIn.next(true);
+          this.setLoggedInState(true);
           this.fetchUserProfile().subscribe({
           });
         })
@@ -79,8 +99,8 @@ export class AuthService {
   logout(): void {
     this.token = null;
     sessionStorage.removeItem('token');
-    this.loggedIn.next(false);
-    this._currentUserProfile.next(null);
+    this.setLoggedInState(false);
+    this.setUserProfileState(null);
     this.router.navigate(['/login']);
   }
 
@@ -89,7 +109,7 @@ export class AuthService {
   }
 
   getCachedUserEmail(): string | null {
-    const currentUser = this._currentUserProfile.getValue();
+    const currentUser = this._currentUserProfileSignal();
     return currentUser ? currentUser.email : null;
   }
 
@@ -116,16 +136,16 @@ export class AuthService {
   }
 
   isLoggedInSnapshot(): boolean {
-    return this.loggedIn.value;
+    return this._loggedInSignal();
   }
 
   getCurrentUserProfileSnapshot(): UserProfile | null {
-    return this._currentUserProfile.getValue();
+    return this._currentUserProfileSignal();
   }
 
   fetchUserProfile(): Observable<UserProfile> {
     return this.http.get<UserProfile>(`${this.apiURL}/auth/profile`).pipe(
-      tap(profile => this._currentUserProfile.next(profile)),
+      tap(profile => this.setUserProfileState(profile)),
       catchError(error => {
         if (error.status === 401 || error.status === 403) {
           this.logout();
@@ -137,7 +157,7 @@ export class AuthService {
 
   updateProfile(updateData: any): Observable<UserProfile> {
     return this.http.put<UserProfile>(`${this.apiURL}/auth/profile`, updateData).pipe(
-      tap(profile => this._currentUserProfile.next(profile)),
+      tap(profile => this.setUserProfileState(profile)),
       catchError(error => {
         return throwError(() => new Error('Failed to update user profile'));
       })
