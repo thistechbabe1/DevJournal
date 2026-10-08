@@ -23,28 +23,28 @@
 
       <button
         class="filter-option-btn"
-        [class.active]="currentView === 'all'"
+        [class.active]="currentView() === 'all'"
         (click)="setCurrentView('all')"
         >
         <span>All Journals</span>
       </button>
       <button
         class="filter-option-btn"
-        [class.active]="currentView === 'published'"
+        [class.active]="currentView() === 'published'"
         (click)="setCurrentView('published')"
         >
         <span>Published</span>
       </button>
       <button
         class="filter-option-btn"
-        [class.active]="currentView === 'drafts'"
+        [class.active]="currentView() === 'drafts'"
         (click)="setCurrentView('drafts')"
         >
         <span>Drafts</span>
       </button>
     </div>
 
-    @if (isLoading) {
+    @if (isLoading()) {
       <div class="info-message loading-state">
         <div class="spinner-border text-primary-purple" role="status">
           <span class="visually-hidden">Loading...</span>
@@ -53,18 +53,18 @@
       </div>
     }
 
-    @if (errorMessage) {
+    @if (errorMessage()) {
       <div class="info-message error-state" role="alert">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        <span>{{ errorMessage }}</span>
+        <span>{{ errorMessage() }}</span>
       </div>
     }
 
-    @if (!isLoading && !errorMessage && journalEntries.length === 0) {
+    @if (!isLoading() && !errorMessage() && journalEntries().length === 0) {
       <div
         class="info-message no-entries-state"
         >
-        <p>No journal entries found in the "{{ currentView | titlecase }}" section. Start by creating a new one!</p>
+        <p>No journal entries found in the "{{ currentView() | titlecase }}" section. Start by creating a new one!</p>
         <button class="btn-custom-primary mt-3" (click)="addNewJournal()">
           Create First Journal
         </button>
@@ -72,7 +72,7 @@
     }
 
     <div class="journal-entries-grid">
-      @for (entry of journalEntries; track entry._id ?? i; let i = $index) {
+      @for (entry of journalEntries(); track entry._id ?? i; let i = $index) {
         <div
           class="journal-entry-card"
           (click)="viewJournal(entry._id)"

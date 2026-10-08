@@ -11,9 +11,9 @@ describe('JournalService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [JournalService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [],
+      providers: [JournalService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    });
     service = TestBed.inject(JournalService);
     httpMock = TestBed.inject(HttpTestingController);
   });
@@ -26,14 +26,25 @@ describe('JournalService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch all journals without query params by default', () => {
+  it('should fetch all journals without query params by default and update signals + computed counts', () => {
     service.getAllJournals().subscribe(journals => {
       expect(journals.length).toBe(2);
     });
+    expect(service.isLoading()).toBeTrue();
 
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('GET');
-    req.flush([{ _id: '1', title: 'First' }, { _id: '2', title: 'Second' }]);
+    req.flush([
+      { _id: '1', title: 'First', content: 'A', status: 'published' },
+      { _id: '2', title: 'Second', content: 'B', status: 'draft' }
+    ]);
+
+    expect(service.isLoading()).toBeFalse();
+    expect(service.totalCount()).toBe(2);
+    expect(service.publishedCount()).toBe(1);
+    expect(service.draftCount()).toBe(1);
+    expect(service.publishedJournals()[0].title).toBe('First');
+    expect(service.draftJournals()[0].title).toBe('Second');
   });
 
   it('should fetch journals with status filter when provided', () => {
@@ -56,7 +67,7 @@ describe('JournalService', () => {
     req.flush({ _id: '123', title: 'Sample' });
   });
 
-  it('should create a journal entry', () => {
+  it('should create a journal entry and prepend it to journals signal', () => {
     const newEntry = { title: 'New Entry', content: 'Some content' };
 
     service.createJournal(newEntry).subscribe(res => {
@@ -66,14 +77,23 @@ describe('JournalService', () => {
     const req = httpMock.expectOne(apiUrl);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(newEntry);
-    req.flush({ _id: '456', ...newEntry });
+    req.flush({ _id: '456', ...newEntry, status: 'published' });
+
+    expect(service.totalCount()).toBe(1);
+    expect(service.journals()[0]._id).toBe('456');
   });
 
-  it('should delete a journal entry by ID', () => {
+  it('should delete a journal entry by ID and remove it from journals signal', () => {
+    service.createJournal({ title: 'To Delete', content: 'Body' }).subscribe();
+    httpMock.expectOne(apiUrl).flush({ _id: '123', title: 'To Delete', content: 'Body' });
+    expect(service.totalCount()).toBe(1);
+
     service.deleteJournal('123').subscribe();
 
     const req = httpMock.expectOne(`${apiUrl}/123`);
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
+
+    expect(service.totalCount()).toBe(0);
   });
 });
