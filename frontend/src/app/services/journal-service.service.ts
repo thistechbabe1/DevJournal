@@ -1,6 +1,6 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Journal } from '../models/journal.model';
 import { environment } from '../../environments/environment';
@@ -10,9 +10,6 @@ import { environment } from '../../environments/environment';
 })
 export class JournalService {
   private apiUrl = `${environment.apiUrl}/journals`;
-
-  private readonly _journals = new BehaviorSubject<Journal[]>([]);
-  readonly journals$ = this._journals.asObservable();
 
   private readonly _journalsSignal = signal<Journal[]>([]);
   private readonly _isLoadingSignal = signal<boolean>(false);
@@ -37,7 +34,6 @@ export class JournalService {
   private setJournalsState(entries: Journal[]): void {
     const safeEntries = Array.isArray(entries) ? entries : [];
     this._journalsSignal.set(safeEntries);
-    this._journals.next(safeEntries);
   }
 
   getAllJournals(status?: 'draft' | 'published'): Observable<Journal[]> {

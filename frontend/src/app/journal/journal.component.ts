@@ -1,6 +1,5 @@
 import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterModule } from '@angular/router';
 import { JournalService } from '../services/journal-service.service';
 import { Journal } from '../models/journal.model';
@@ -26,9 +25,7 @@ export class JournalComponent implements OnInit {
   readonly placeholderImage: string = 'assets/images/placeholder_journal.jpeg';
   private readonly backendUrl: string = environment.apiUrl;
 
-  private readonly rawJournals = toSignal(this.journalService.journals$, {
-    initialValue: [] as Journal[]
-  });
+  private readonly rawJournals = this.journalService.journals;
 
   private readonly normalizedEntries = computed<Journal[]>(() => {
     const data = this.rawJournals();
