@@ -1,152 +1,130 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-
+import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { JournalService } from '../services/journal-service.service';
-import { Journal } from '../models/journal.model';
-import { UserProfile } from '../models/UserProfile.model';
-import { Subscription } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-    selector: 'app-settings',
-    templateUrl: './settings.component.html',
-    styleUrls: ['./settings.component.scss'],
-    imports: [FormsModule, RouterModule]
+  selector: 'app-settings',
+  templateUrl: './settings.component.html',
+  styleUrls: ['./settings.component.scss'],
+  imports: [FormsModule, RouterModule]
 })
-export class SettingsComponent implements OnInit, OnDestroy {
-  userName: string = '';
-  userEmail: string = '';
-  currentPassword: string = '';
-  newPassword: string = '';
-  isLoggedIn: boolean = false;
+export class SettingsComponent implements OnInit {
+  userName = signal<string>('');
+  userEmail = signal<string>('');
+  currentPassword = signal<string>('');
+  newPassword = signal<string>('');
 
-  aiAssistantEnabled: boolean = true;
-  profileMessage: string | null = null;
-  profileMessageClass: string = '';
-  aiSettingsMessage: string | null = null;
-  aiSettingsMessageClass: string = '';
-  exportMessage: string | null = null;
-  exportMessageClass: string = '';
+  readonly isAuthenticated = this.authService.isAuthenticated;
+  readonly currentUserProfile = this.authService.currentUserProfile;
 
-  private authSubscription!: Subscription;
-  private profileSubscription!: Subscription;
-  isUpdatingProfile: boolean = false;
+  aiAssistantEnabled = signal<boolean>(true);
+  profileMessage = signal<string | null>(null);
+  profileMessageClass = signal<string>('');
+  aiSettingsMessage = signal<string | null>(null);
+  aiSettingsMessageClass = signal<string>('');
+  exportMessage = signal<string | null>(null);
+  exportMessageClass = signal<string>('');
+  isUpdatingProfile = signal<boolean>(false);
 
   constructor(
     private authService: AuthService,
     private journalService: JournalService,
     private router: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.profileSubscription = this.authService.currentUserProfile$.subscribe(
-      (profile: UserProfile | null) => {
-        if (profile) {
-          this.userName = profile.name || '';
-          this.userEmail = profile.email || '';
-        } else {
+    if (!this.isAuthenticated()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const cached = this.currentUserProfile();
+    if (cached) {
+      this.userName.set(cached.name || '');
+      this.userEmail.set(cached.email || '');
+    } else {
+      this.authService.fetchUserProfile().subscribe({
+        next: (profile) => {
+          this.userName.set(profile.name || '');
+          this.userEmail.set(profile.email || '');
+        },
+        error: () => {
           this.router.navigate(['/login']);
         }
-        this.currentPassword = '';
-        this.newPassword = '';
-      },
-      (error: HttpErrorResponse) => {
-        this.profileMessage = error.error?.message || 'Failed to load profile data.';
-        this.profileMessageClass = 'message-error';
-        if (error.status === 401 || error.status === 403) {
-            this.router.navigate(['/login']);
-        }
-      }
-    );
-
-    if (!this.authService.isLoggedInSnapshot() || !this.authService.getCurrentUserProfileSnapshot()) {
-      this.authService.fetchUserProfile().subscribe({
-          error: () => {
-              this.router.navigate(['/login']);
-          }
       });
-    }
-
-    this.authSubscription = this.authService.isLoggedIn().subscribe(status => {
-      this.isLoggedIn = status;
-      if (!status) {
-        this.router.navigate(['/login']);
-      }
-    });
-  }
-
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
-    if (this.profileSubscription) {
-      this.profileSubscription.unsubscribe();
     }
   }
 
   updateProfile(): void {
-    this.profileMessage = null;
-    this.isUpdatingProfile = true;
+    this.profileMessage.set(null);
+    this.isUpdatingProfile.set(true);
 
     const updateData: any = {};
-    const currentProfile = this.authService.getCurrentUserProfileSnapshot();
+    const currentProfile = this.currentUserProfile();
 
-    if (currentProfile && this.userName !== currentProfile.name) {
-        updateData.name = this.userName;
+    const nameVal = this.userName().trim();
+    const emailVal = this.userEmail().trim();
+    const currPassVal = this.currentPassword();
+    const newPassVal = this.newPassword();
+
+    if (currentProfile && nameVal !== currentProfile.name) {
+      updateData.name = nameVal;
     }
 
-    if (currentProfile && this.userEmail !== currentProfile.email) {
-      updateData.email = this.userEmail;
-      if (!this.currentPassword) {
-        this.profileMessage = 'Current password is required to change your email.';
-        this.profileMessageClass = 'message-error';
-        this.isUpdatingProfile = false;
+    if (emailVal && (!currentProfile || emailVal !== currentProfile.email)) {
+      updateData.email = emailVal;
+      if (!currPassVal) {
+        this.profileMessage.set('Current password is required to change your email.');
+        this.profileMessageClass.set('message-error');
+        this.isUpdatingProfile.set(false);
         return;
       }
     }
 
-    if (this.newPassword) {
-      updateData.newPassword = this.newPassword;
-      if (!this.currentPassword) {
-        this.profileMessage = 'Current password is required to set a new password.';
-        this.profileMessageClass = 'message-error';
-        this.isUpdatingProfile = false;
+    if (newPassVal) {
+      updateData.newPassword = newPassVal;
+      if (!currPassVal) {
+        this.profileMessage.set('Current password is required to set a new password.');
+        this.profileMessageClass.set('message-error');
+        this.isUpdatingProfile.set(false);
         return;
       }
     }
 
-    if (this.currentPassword) {
-        updateData.currentPassword = this.currentPassword;
+    if (currPassVal) {
+      updateData.currentPassword = currPassVal;
     }
 
     if (Object.keys(updateData).length === 0) {
-      this.profileMessage = 'No changes to save.';
-      this.profileMessageClass = 'message-info';
-      this.isUpdatingProfile = false;
+      this.profileMessage.set('No changes to save.');
+      this.profileMessageClass.set('message-info');
+      this.isUpdatingProfile.set(false);
       return;
     }
 
     this.authService.updateProfile(updateData).subscribe({
-      next: (response) => {
-        this.profileMessage = (response as any).message || 'Profile updated successfully!';
-        this.profileMessageClass = 'message-success';
-        this.currentPassword = '';
-        this.newPassword = '';
-        this.isUpdatingProfile = false;
+      next: (response: any) => {
+        this.profileMessage.set(response?.message || 'Profile updated successfully!');
+        this.profileMessageClass.set('message-success');
+        this.currentPassword.set('');
+        this.newPassword.set('');
+        this.isUpdatingProfile.set(false);
       },
       error: (err: HttpErrorResponse) => {
-        this.profileMessage = err.error?.message || 'Failed to update profile. Please try again.';
-        this.profileMessageClass = 'message-error';
-        this.isUpdatingProfile = false;
+        this.profileMessage.set(err.error?.message || 'Failed to update profile. Please try again.');
+        this.profileMessageClass.set('message-error');
+        this.isUpdatingProfile.set(false);
       }
     });
   }
 
   toggleAiSettings(): void {
-    this.aiSettingsMessage = null;
-    this.aiSettingsMessage = `AI Assistant ${this.aiAssistantEnabled ? 'enabled' : 'disabled'} (functionality not yet fully wired).`;
-    this.aiSettingsMessageClass = 'message-info';
+    this.aiSettingsMessage.set(
+      `AI Assistant ${this.aiAssistantEnabled() ? 'enabled' : 'disabled'} (functionality not yet fully wired).`
+    );
+    this.aiSettingsMessageClass.set('message-info');
   }
 }

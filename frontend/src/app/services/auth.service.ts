@@ -2,7 +2,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { UserProfile } from '../models/UserProfile.model';
 import { environment } from '../../environments/environment';
@@ -21,9 +21,6 @@ interface JwtPayload {
 })
 export class AuthService {
   private token: string | null = null;
-  private loggedIn = new BehaviorSubject<boolean>(false);
-  private _currentUserProfile = new BehaviorSubject<UserProfile | null>(null);
-  currentUserProfile$ = this._currentUserProfile.asObservable();
 
   private readonly _loggedInSignal = signal<boolean>(false);
   private readonly _currentUserProfileSignal = signal<UserProfile | null>(null);
@@ -43,12 +40,10 @@ export class AuthService {
 
   private setLoggedInState(value: boolean): void {
     this._loggedInSignal.set(value);
-    this.loggedIn.next(value);
   }
 
   private setUserProfileState(profile: UserProfile | null): void {
     this._currentUserProfileSignal.set(profile);
-    this._currentUserProfile.next(profile);
   }
 
   private loadTokenAndProfile(): void {
@@ -129,10 +124,6 @@ export class AuthService {
       }
     }
     return null;
-  }
-
-  isLoggedIn(): Observable<boolean> {
-    return this.loggedIn.asObservable();
   }
 
   isLoggedInSnapshot(): boolean {

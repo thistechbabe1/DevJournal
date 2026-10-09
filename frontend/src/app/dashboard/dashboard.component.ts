@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -8,41 +8,90 @@ import { AuthService } from '../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss'],
-    imports: [CommonModule, FormsModule, RouterModule, MatSnackBarModule],
-    providers: [DatePipe]
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
+  imports: [CommonModule, FormsModule, RouterModule, MatSnackBarModule],
+  providers: [DatePipe]
 })
 export class DashboardComponent implements OnInit {
-  userName: string = 'User';
-  activities: any[] = [];
-  totalJournals: number = 0;
-  draftCount: number = 0;
-  lastActivityDate: Date | string | undefined;
+  private readonly journals = this.journalService.journals;
 
-  aiTip: string = 'Loading a fresh dev insight...';
+  readonly userName = computed(() => {
+    const profile = this.authService.currentUserProfile();
+    if (profile?.name) return profile.name;
+    if (profile?.email) return profile.email.split('@')[0];
+    const user = this.authService.getCurrentUser();
+    if (user?.name) return user.name;
+    if (user?.email) return user.email.split('@')[0];
+    return 'User';
+  });
+
+  readonly totalJournals = this.journalService.publishedCount;
+  readonly draftCount = this.journalService.draftCount;
+
+  readonly activities = computed(() => {
+    const valid = this.journals().filter((j: any) => j != null);
+    const sorted = [...valid].sort(
+      (a: any, b: any) =>
+        new Date(b.updatedAt || b.createdAt || b.date).getTime() -
+        new Date(a.updatedAt || a.createdAt || a.date).getTime()
+    );
+    return sorted.slice(0, 3).map((j: any) => ({
+      _id: j._id,
+      title: j.title,
+      entry: j.content ? j.content.replace(/<[^>]*>/g, '').slice(0, 100) : '',
+      createdAt: j.createdAt || j.date
+    }));
+  });
+
+  readonly lastActivityDate = computed(() => {
+    const valid = this.journals().filter((j: any) => j != null);
+    if (valid.length > 0) {
+      const sorted = [...valid].sort(
+        (a: any, b: any) =>
+          new Date(b.updatedAt || b.createdAt || b.date).getTime() -
+          new Date(a.updatedAt || a.createdAt || a.date).getTime()
+      );
+      return sorted[0].updatedAt || sorted[0].createdAt || sorted[0].date;
+    }
+    const user = this.authService.getCurrentUser();
+    return user?.createdAt || null;
+  });
+
+  readonly formattedLastActivityDate = computed(() => {
+    const dateVal = this.lastActivityDate();
+    if (dateVal) {
+      const d = new Date(dateVal);
+      if (!isNaN(d.getTime())) {
+        return this.datePipe.transform(d, 'mediumDate') || 'N/A';
+      }
+    }
+    return 'N/A';
+  });
+
+  readonly aiTip = signal<string>('Loading a fresh dev insight...');
 
   private fallbackTips: string[] = [
-    "Always plan your code before you write it. A little planning saves a lot of debugging.",
-    "Break down complex problems into smaller, manageable chunks.",
-    "Write clean, readable code. Clarity over cleverness, always.",
-    "Use meaningful variable and function names. Self-documenting code is best.",
+    'Always plan your code before you write it. A little planning saves a lot of debugging.',
+    'Break down complex problems into smaller, manageable chunks.',
+    'Write clean, readable code. Clarity over cleverness, always.',
+    'Use meaningful variable and function names. Self-documenting code is best.',
     "Practice consistent indentation and formatting. Your code's aesthetics matter.",
     "Comment your code to explain 'why', not 'what'.",
-    "Embrace version control (Git) early and commit often with descriptive messages.",
-    "Test your code thoroughly. Unit tests are your safety net.",
+    'Embrace version control (Git) early and commit often with descriptive messages.',
+    'Test your code thoroughly. Unit tests are your safety net.',
     "Learn to debug effectively. It's a critical skill for every developer.",
     "Don't repeat yourself (DRY principle). Extract reusable functions and components.",
-    "Continuously refactor your code to improve its structure and maintainability.",
-    "Stay curious and never stop learning. Technology evolves rapidly.",
+    'Continuously refactor your code to improve its structure and maintainability.',
+    'Stay curious and never stop learning. Technology evolves rapidly.',
     "Read other people's code. It's a great way to learn new patterns and solutions.",
     "Understand the 'why' behind the code, not just the 'how'.",
-    "Take regular breaks to avoid burnout and maintain focus.",
-    "Seek feedback on your code through code reviews. Fresh eyes catch more.",
-    "Learn foundational computer science concepts (data structures, algorithms).",
-    "Specialize in an area you enjoy, but maintain a broad understanding of the ecosystem.",
-    "Build side projects to apply your knowledge and explore new technologies.",
+    'Take regular breaks to avoid burnout and maintain focus.',
+    'Seek feedback on your code through code reviews. Fresh eyes catch more.',
+    'Learn foundational computer science concepts (data structures, algorithms).',
+    'Specialize in an area you enjoy, but maintain a broad understanding of the ecosystem.',
+    'Build side projects to apply your knowledge and explore new technologies.',
     "Don't be afraid to make mistakes; they are crucial learning opportunities."
   ];
 
@@ -57,55 +106,13 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const currentUser = this.authService.getCurrentUser();
-    if (currentUser && currentUser.name) {
-      this.userName = currentUser.name;
-    } else if (currentUser && currentUser.email) {
-      this.userName = currentUser.email.split('@')[0];
-    }
-
-    if (currentUser && currentUser.createdAt) {
-      this.lastActivityDate = new Date(currentUser.createdAt);
-    } else {
-      this.lastActivityDate = 'N/A';
-    }
-
     this.loadJournalData();
     this.fetchDevTipFromApi();
   }
 
   loadJournalData(): void {
     this.journalService.getAllJournals().subscribe({
-      next: (journals) => {
-        const validJournals = journals.filter((j: any) => j != null);
-        const sorted = validJournals.sort(
-          (a: any, b: any) =>
-            new Date(b.updatedAt || b.createdAt).getTime() -
-            new Date(a.updatedAt || a.createdAt).getTime()
-        );
-
-        this.totalJournals = sorted.filter((j: any) => j.status === 'published').length;
-        this.draftCount = sorted.filter((j: any) => j.status === 'draft').length;
-
-        if (sorted.length > 0) {
-          const latestActivityDateSource = sorted[0]?.updatedAt || sorted[0]?.createdAt;
-          if (latestActivityDateSource) {
-            this.lastActivityDate = new Date(latestActivityDateSource);
-          }
-        }
-
-        this.activities = sorted.slice(0, 3);
-      },
-      error: (err: HttpErrorResponse) => {
-        this.totalJournals = 0;
-        this.draftCount = 0;
-        const currentUser = this.authService.getCurrentUser();
-        if (currentUser && currentUser.createdAt) {
-           this.lastActivityDate = new Date(currentUser.createdAt);
-        } else {
-           this.lastActivityDate = 'N/A';
-        }
-        this.activities = [];
+      error: () => {
         this.snackBar.open('Failed to load journal data.', 'Dismiss', {
           duration: 3000,
           panelClass: ['snackbar-error']
@@ -115,7 +122,7 @@ export class DashboardComponent implements OnInit {
   }
 
   fetchDevTipFromApi(): void {
-    this.aiTip = this.getRandomFallbackTip();
+    this.aiTip.set(this.getRandomFallbackTip());
   }
 
   private getRandomFallbackTip(): string {
@@ -123,7 +130,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getNewAiTip(): void {
-    this.aiTip = this.getRandomFallbackTip();
+    this.aiTip.set(this.getRandomFallbackTip());
   }
 
   submitQuickEntry(): void {
@@ -144,31 +151,20 @@ export class DashboardComponent implements OnInit {
     };
 
     this.journalService.createJournal(newEntry).subscribe({
-      next: (res) => {
+      next: () => {
         this.quickEntryContent = '';
-        this.loadJournalData();
         this.snackBar.open('Quick entry saved successfully!', 'Close', {
           duration: 3000,
           panelClass: ['snackbar-success']
         });
       },
-      error: (err: HttpErrorResponse) => {
+      error: () => {
         this.snackBar.open('Failed to save quick entry. Please try again.', 'Dismiss', {
           duration: 5000,
           panelClass: ['snackbar-error']
         });
       }
     });
-  }
-
-  get formattedLastActivityDate(): string {
-    if (this.lastActivityDate instanceof Date) {
-      return this.datePipe.transform(this.lastActivityDate, 'mediumDate') || 'N/A';
-    } else if (typeof this.lastActivityDate === 'string' && this.lastActivityDate === 'N/A') {
-      return 'N/A';
-    } else {
-      return 'N/A';
-    }
   }
 
   getFormattedActivityDate(dateString: string | Date | undefined): string {
