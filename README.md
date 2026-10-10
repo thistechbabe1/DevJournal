@@ -36,3 +36,4 @@ This project is built with a decoupled architecture, featuring an Angular fronte
 - **[JSON Web Token (JWT)](https://jwt.io/)** for authentication
 - **[Cloudinary](https://cloudinary.com/)** for image storage and management
 - **[Google Gemini API](https://ai.google.dev/)** for generative AI features
+- **Health Check & Uptime:** `GET /health` lightweight, unauthenticated endpoint for uptime pingers (no database access)
