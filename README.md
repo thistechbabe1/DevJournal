@@ -6,20 +6,14 @@
 
 ## 📸 Screenshots
 
-| Dashboard & Activity | Rich Journal Editor |
-| :---: | :---: |
-| ![Dashboard Screenshot](docs/screenshots/dashboard.png)<br>_Activity stream, quick notes & stats_ | ![Editor Screenshot](docs/screenshots/editor.png)<br>_TinyMCE WYSIWYG editor & cover upload_ |
-
-| AI Assistant & Chat | Entry View & PDF Export |
-| :---: | :---: |
-| ![Chat Screenshot](docs/screenshots/ai-chat.png)<br>_Contextual chat mentor with code highlighting_ | ![View Screenshot](docs/screenshots/view-entry.png)<br>_Client-side PDF compilation & metadata_ |
+*Screenshots coming soon.*
 
 ---
 
 ## ⚡ Features
 
 - **📝 Rich-Text WYSIWYG Journaling:** Craft notes, technical retrospectives, and architecture logs using TinyMCE with code blocks, typography, and formatted lists.
-- **🤖 Contextual AI Insights:** Automated sentiment analysis, key concept extraction, actionable advice, and curated resource links powered by the Google Gemini API (`gemini-1.5-flash`).
+- **🤖 Contextual AI Insights:** Automated sentiment analysis, key concept extraction, actionable advice, and curated resource links powered by the Google Gemini API (`gemini-2.5-flash`).
 - **💬 Interactive AI Chat Mentor:** Markdown-rendered coding dialogue with syntax-highlighted code fences and one-click copy buttons.
 - **🏷️ Structured Organization:** Tagging, categories, date-based indexing, and instant client-side filtering (`all`, `published`, `drafts`).
 - **📄 Client-Side PDF Compilation:** Single-click high-fidelity document generation powered by `html2pdf.js` with sanitized markup rendering.
@@ -43,9 +37,9 @@ DevJournal follows a decoupled architecture designed for high maintainability, t
 ┌───────────────────────────▼────────────────────────────┐
 │                  Node.js / Express API                 │
 │  • Security: Helmet, CORS Whitelisting, Rate-Limiting  │
-│  • Controller / Service Domain Architecture            │
+│  • Express Routes, Controllers & Middleware Architecture│
 │  • MongoDB & Mongoose Schema Validation                │
-│  • Cloudinary Media Storage & Google Gemini 1.5 SDK     │
+│  • Cloudinary Media Storage & Google Gemini 2.5 Flash   │
 └────────────────────────────────────────────────────────┘
 ```
 
