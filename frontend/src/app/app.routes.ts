@@ -3,7 +3,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { JournalComponent } from './journal/journal.component';
 import { ChatComponent } from './chat/chat.component';
-import { SettingsComponent } from './settings/settings.component';
+import { SettingsComponent } from './features/settings/settings.component';
 import { AddJournalComponent } from './journal/add-journal/add-journal.component';
 import { ViewJournalComponent } from './journal/view-journal/view-journal.component';
 import { LoginComponent } from './features/auth/login/login.component';

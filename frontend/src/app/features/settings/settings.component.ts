@@ -1,8 +1,8 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../core/services/auth.service';
-import { JournalService } from '../services/journal-service.service';
+import { AuthService } from '../../core/services/auth.service';
+import { JournalService } from '../../services/journal-service.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
