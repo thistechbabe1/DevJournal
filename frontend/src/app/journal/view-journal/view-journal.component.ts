@@ -6,7 +6,7 @@ import { JournalService } from '../../services/journal-service.service';
 import { Journal } from '../../models/journal.model';
 import jsPDF from 'jspdf';
 import { environment } from '../../../environments/environment';
-import { AiAssistantService } from '../../services/ai-assistant.service';
+import { AiAssistantService } from '../../core/services/ai-assistant.service';
 import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
 import { SafeHtmlPipe } from '../../pipes/safe-html.pipe';

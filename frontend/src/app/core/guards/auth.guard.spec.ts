@@ -5,7 +5,7 @@ import { Router, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/ro
 import { authGuard } from './auth.guard';
 import { AuthService } from '../services/auth.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 describe('authGuard', () => {
   let authServiceSpy: { isAuthenticated: jasmine.Spy };

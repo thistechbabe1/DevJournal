@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MarkdownModule } from 'ngx-markdown';
-import { AiAssistantService } from '../services/ai-assistant.service';
+import { AiAssistantService } from '../core/services/ai-assistant.service';
 
 interface ChatMessage {
   text: string;

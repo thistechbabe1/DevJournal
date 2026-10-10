@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../core/services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({

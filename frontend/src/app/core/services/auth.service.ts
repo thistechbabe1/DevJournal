@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { UserProfile } from '../models/UserProfile.model';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 interface JwtPayload {
   id: string;

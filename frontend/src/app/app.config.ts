@@ -6,9 +6,9 @@ import { MarkdownModule } from 'ngx-markdown';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { routes } from './app.routes';
-import { authInterceptor } from './interceptors/auth.interceptor';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { JournalService } from './services/journal-service.service';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './core/services/auth.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
