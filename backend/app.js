@@ -35,6 +35,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// Health check endpoint for uptime monitors (no DB access, unthrottled, no auth)
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Rate Limiting Config
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
