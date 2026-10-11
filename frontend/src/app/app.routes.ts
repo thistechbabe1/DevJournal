@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
-import { JournalComponent } from './journal/journal.component';
+import { JournalComponent } from './features/journal/pages/journal-list/journal.component';
 import { ChatComponent } from './features/chat/chat.component';
 import { SettingsComponent } from './features/settings/settings.component';
-import { AddJournalComponent } from './journal/add-journal/add-journal.component';
-import { ViewJournalComponent } from './journal/view-journal/view-journal.component';
+import { AddJournalComponent } from './features/journal/pages/add-journal/add-journal.component';
+import { ViewJournalComponent } from './features/journal/pages/view-journal/view-journal.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 

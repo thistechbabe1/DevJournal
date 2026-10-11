@@ -5,11 +5,11 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { JournalService } from '../../services/journal-service.service';
 import { Journal } from '../../models/journal.model';
 import jsPDF from 'jspdf';
-import { environment } from '../../../environments/environment';
-import { AiAssistantService } from '../../core/services/ai-assistant.service';
+import { environment } from '../../../../../environments/environment';
+import { AiAssistantService } from '../../../../core/services/ai-assistant.service';
 import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
-import { SafeHtmlPipe } from '../../shared/pipes/safe-html.pipe';
+import { SafeHtmlPipe } from '../../../../shared/pipes/safe-html.pipe';
 
 @Component({
     selector: 'app-view-journal',

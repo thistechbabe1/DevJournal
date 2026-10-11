@@ -7,7 +7,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { JournalService } from './services/journal-service.service';
+import { JournalService } from './features/journal/services/journal-service.service';
 import { AuthService } from './core/services/auth.service';
 
 export const appConfig: ApplicationConfig = {

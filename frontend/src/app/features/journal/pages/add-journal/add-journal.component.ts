@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { JournalService } from '../../services/journal-service.service';
 import { Journal } from '../../models/journal.model';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({

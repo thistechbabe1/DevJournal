@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { JournalService } from './journal-service.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../../environments/environment';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('JournalService', () => {

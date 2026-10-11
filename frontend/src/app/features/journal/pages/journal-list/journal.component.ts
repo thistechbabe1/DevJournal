@@ -1,9 +1,9 @@
 import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { JournalService } from '../services/journal-service.service';
-import { Journal } from '../models/journal.model';
-import { environment } from '../../environments/environment';
+import { JournalService } from '../../services/journal-service.service';
+import { Journal } from '../../models/journal.model';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-journal',

@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { RouterTestingModule } from '@angular/router/testing';
 import { JournalComponent } from './journal.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 
 describe('JournalComponent', () => {
   let component: JournalComponent;
