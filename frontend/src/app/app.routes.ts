@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { JournalComponent } from './journal/journal.component';
-import { ChatComponent } from './chat/chat.component';
+import { ChatComponent } from './features/chat/chat.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { AddJournalComponent } from './journal/add-journal/add-journal.component';
 import { ViewJournalComponent } from './journal/view-journal/view-journal.component';
