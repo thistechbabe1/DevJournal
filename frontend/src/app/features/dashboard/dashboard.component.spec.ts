@@ -4,9 +4,9 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DashboardComponent } from './dashboard.component';
-import { AuthService } from '../core/services/auth.service';
-import { JournalService } from '../services/journal-service.service';
-import { environment } from '../../environments/environment';
+import { AuthService } from '../../core/services/auth.service';
+import { JournalService } from '../../services/journal-service.service';
+import { environment } from '../../../environments/environment';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('DashboardComponent', () => {

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { JournalComponent } from './journal/journal.component';
 import { ChatComponent } from './chat/chat.component';
 import { SettingsComponent } from './features/settings/settings.component';

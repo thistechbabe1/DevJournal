@@ -3,8 +3,8 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { JournalService } from '../services/journal-service.service';
-import { AuthService } from '../core/services/auth.service';
+import { JournalService } from '../../services/journal-service.service';
+import { AuthService } from '../../core/services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
