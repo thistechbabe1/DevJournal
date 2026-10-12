@@ -1,0 +1,117 @@
+<div class="auth-page register-page">
+  <div class="left-panel">
+    <div class="form-card">
+      <h2 class="form-title animate__animated animate__fadeInDown">Create Account</h2>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="custom-input-field animate__animated animate__fadeInLeft">
+          <i class="fas fa-user"></i>
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="Your Name"
+            required
+            />
+          </div>
+          @if (f['name'].invalid && f['name'].touched) {
+            <div class="error-message">
+              @if (f['name'].errors?.['required']) {
+                <span>Name is required.</span>
+              }
+            </div>
+          }
+
+          <div class="custom-input-field animate__animated animate__fadeInLeft animate__delay-0-1s">
+            <i class="fas fa-envelope"></i>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="email@gmail.com"
+              required
+              />
+            </div>
+            @if (f['email'].invalid && f['email'].touched) {
+              <div class="error-message">
+                @if (f['email'].errors?.['required']) {
+                  <span>Email is required.</span>
+                }
+                @if (f['email'].errors?.['email']) {
+                  <span>Enter a valid email address.</span>
+                }
+              </div>
+            }
+
+            <div class="custom-input-field animate__animated animate__fadeInLeft animate__delay-0-3s">
+              <i class="fas fa-lock"></i>
+              <input
+                [type]="passwordFieldType"
+                formControlName="password"
+                placeholder="Enter your password"
+                required
+                />
+                <i class="fas" [ngClass]="{'fa-eye-slash': passwordFieldType === 'password', 'fa-eye': passwordFieldType === 'text'}" (click)="togglePasswordVisibility('password')"></i>
+              </div>
+              @if (f['password'].invalid && f['password'].touched) {
+                <div class="error-message">
+                  @if (f['password'].errors?.['required']) {
+                    <span>Password is required.</span>
+                  }
+                  @if (f['password'].errors?.['minlength']) {
+                    <span>Password must be at least 6 characters.</span>
+                  }
+                </div>
+              }
+
+              <div class="custom-input-field animate__animated animate__fadeInLeft animate__delay-0-4s">
+                <i class="fas fa-lock"></i>
+                <input
+                  [type]="confirmPasswordFieldType"
+                  formControlName="confirmPassword"
+                  placeholder="Confirm password"
+                  required
+                  />
+                  <i class="fas" [ngClass]="{'fa-eye-slash': confirmPasswordFieldType === 'password', 'fa-eye': confirmPasswordFieldType === 'text'}" (click)="togglePasswordVisibility('confirmPassword')"></i>
+                </div>
+                @if (f['confirmPassword'].invalid && f['confirmPassword'].touched) {
+                  <div class="error-message">
+                    @if (f['confirmPassword'].errors?.['required']) {
+                      <span>Confirm password is required.</span>
+                    }
+                  </div>
+                }
+                @if (form.hasError('mismatch') && f['confirmPassword'].touched) {
+                  <div class="error-message">
+                    Passwords do not match.
+                  </div>
+                }
+
+                <button type="submit" class="btn-custom-primary w-100 animate__animated animate__zoomIn animate__delay-0-5s" [disabled]="form.invalid || isLoading">
+                  @if (isLoading) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  }
+                  Create Account
+                </button>
+              </form>
+
+              <p class="account-prompt animate__animated animate__fadeInUp animate__delay-1-1s">
+                Already have an account?
+                <a routerLink="/login" class="text-link">Sign in</a>
+              </p>
+
+              @if (errorMessage) {
+                <div class="alert alert-danger text-center mt-3 animate__animated animate__fadeIn animate__delay-1-3s" role="alert">
+                  {{ errorMessage }}
+                </div>
+              }
+              @if (successMessage) {
+                <div class="alert alert-success text-center mt-3 animate__animated animate__fadeIn animate__delay-1-3s" role="alert">
+                  {{ successMessage }}
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="right-panel">
+            <img src="assets/images/register.png" alt="3D character writing on a book" class="character-image animate__animated animate__fadeInRight animate__delay-0-5s">
+          </div>
+        </div>
