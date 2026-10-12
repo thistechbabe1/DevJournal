@@ -18,6 +18,7 @@
 - **🏷️ Structured Organization:** Tagging, categories, date-based indexing, and instant client-side filtering (`all`, `published`, `drafts`).
 - **📄 Client-Side PDF Compilation:** Single-click high-fidelity document generation powered by `html2pdf.js` with sanitized markup rendering.
 - **🔒 Hardened Authentication:** Stateless JSON Web Token (JWT) authentication, bcryptjs password hashing, rate limiting, and HTTP request interceptors.
+- **🩺 Lightweight Health Check:** Unauthenticated `GET /health` endpoint returning `200 {status: "ok"}` mounted before rate limiters for uptime monitors and keep-alive pingers.
 
 ---
 
@@ -38,6 +39,7 @@ DevJournal follows a decoupled architecture designed for high maintainability, t
 │                  Node.js / Express API                 │
 │  • Security: Helmet, CORS Whitelisting, Rate-Limiting  │
 │  • Express Routes, Controllers & Middleware Architecture│
+│  • Health Check: GET /health (unthrottled uptime ping) │
 │  • MongoDB & Mongoose Schema Validation                │
 │  • Cloudinary Media Storage & Google Gemini 2.5 Flash   │
 └────────────────────────────────────────────────────────┘
@@ -127,7 +129,7 @@ Generates production artifacts to `dist/dev-journal` using the modern applicatio
 cd backend
 npm test
 ```
-Runs 27 integration tests across 8 suites covering authentication middleware, JWT validation, MongoDB sanitization, rate limiting, and CORS compliance.
+Runs 28 integration tests across 9 suites covering authentication middleware, JWT validation, MongoDB sanitization, rate limiting, health checks, and CORS compliance.
 
 ---
 
