@@ -25,4 +25,23 @@ describe('AddJournalComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should load tinymceApiKey from environment', () => {
+    expect(component.tinymceApiKey).toBeDefined();
+    expect(typeof component.tinymceApiKey).toBe('string');
+  });
+
+  it('should initialize editorConfig with skin and content_style', () => {
+    expect(component.editorConfig).toBeDefined();
+    expect(['oxide', 'oxide-dark']).toContain(component.editorConfig['skin']);
+    expect(component.editorConfig['license_key']).toBe('gpl');
+    expect(component.editorConfig['content_style']).toContain('body {');
+  });
+
+  it('should auto-resize title textarea', () => {
+    const dummyTextarea = document.createElement('textarea');
+    dummyTextarea.style.height = '20px';
+    component.autoResizeTitle({ target: dummyTextarea } as any);
+    expect(dummyTextarea.style.height).toBe('48px');
+  });
 });

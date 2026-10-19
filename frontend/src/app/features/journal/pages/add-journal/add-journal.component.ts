@@ -1,10 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, effect } from '@angular/core';
 
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { EditorModule } from '@tinymce/tinymce-angular';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { JournalService } from '../../services/journal-service.service';
 import { Journal } from '../../models/journal.model';
+import { ThemeService } from '../../../../core/services/theme.service';
 import { environment } from '../../../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -12,9 +13,12 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     selector: 'app-add-journal',
     templateUrl: './add-journal.component.html',
     styleUrls: ['./add-journal.component.scss'],
-    imports: [ReactiveFormsModule, EditorModule, RouterModule]
+    imports: [ReactiveFormsModule, EditorModule, RouterModule],
+    providers: [
+      { provide: TINYMCE_SCRIPT_SRC, useValue: '/tinymce/tinymce.min.js' }
+    ]
 })
-export class AddJournalComponent implements OnInit {
+export class AddJournalComponent implements OnInit, OnDestroy {
   journalForm!: FormGroup;
   selectedFile: File | null = null;
   imageUrl: string | null = null;
@@ -25,6 +29,16 @@ export class AddJournalComponent implements OnInit {
   journalId: string | null = null;
   sanitizedBackendContent: SafeHtml | null = null;
 
+  readonly tinymceApiKey: string = environment.tinymceApiKey;
+  isEditorActive: boolean = true;
+  editorConfig: Record<string, any> = {};
+  private currentEditor: any = null;
+  private editorInitHandler: (() => void) | null = null;
+  private editorChangeHandler: (() => void) | null = null;
+  private savedBookmark: any = null;
+  private savedContentForReinit: string | null = null;
+  private isInitialized: boolean = false;
+
   private readonly backendUrl: string = environment.apiUrl;
 
   constructor(
@@ -33,8 +47,19 @@ export class AddJournalComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
-  ) {}
+    private sanitizer: DomSanitizer,
+    public themeService: ThemeService
+  ) {
+    this.editorConfig = this.buildEditorConfig();
+
+    effect(() => {
+      // Listen to theme changes from ThemeService signal
+      const currentTheme = this.themeService.theme();
+      if (this.isInitialized) {
+        this.reinitEditorForTheme();
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.journalForm = this.fb.group({
@@ -54,6 +79,228 @@ export class AddJournalComponent implements OnInit {
         this.loadJournalData(this.journalId);
       }
     });
+
+    this.isInitialized = true;
+  }
+
+  autoResizeTitle(event?: Event): void {
+    const textarea = event ? (event.target as HTMLTextAreaElement) : (document.getElementById('title') as HTMLTextAreaElement);
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${Math.max(48, textarea.scrollHeight)}px`;
+    }
+  }
+
+  private buildEditorConfig(): Record<string, any> {
+    const isDark = this.themeService.theme() === 'dark';
+    const computed = typeof window !== 'undefined' && typeof document !== 'undefined'
+      ? window.getComputedStyle(document.documentElement)
+      : null;
+
+    const surface = computed?.getPropertyValue('--color-surface')?.trim() || '';
+    const ink = computed?.getPropertyValue('--color-ink')?.trim() || '';
+    const muted = computed?.getPropertyValue('--color-muted')?.trim() || '';
+    const line = computed?.getPropertyValue('--color-line')?.trim() || '';
+    const accent = computed?.getPropertyValue('--color-accent')?.trim() || '';
+    const fontUi = computed?.getPropertyValue('--font-ui')?.trim() || 'sans-serif';
+    const fontMono = computed?.getPropertyValue('--font-mono')?.trim() || 'monospace';
+
+    const contentStyle = `
+      body {
+        background-color: ${surface};
+        color: ${ink};
+        font-family: ${fontUi};
+        font-size: 1rem;
+        line-height: 1.6;
+        padding: 1rem;
+        margin: 0;
+      }
+      body::before {
+        color: ${muted};
+        opacity: 0.8;
+      }
+      a {
+        color: ${accent};
+        text-decoration: underline;
+      }
+      code {
+        font-family: ${fontMono};
+        background-color: ${line};
+        padding: 0.15em 0.35em;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      pre {
+        background-color: ${surface};
+        border: 1px solid ${line};
+        padding: 1rem;
+        border-radius: 6px;
+        font-family: ${fontMono};
+        overflow-x: auto;
+      }
+      blockquote {
+        border-left: 3px solid ${accent};
+        margin: 1rem 0;
+        padding-left: 1rem;
+        color: ${muted};
+        font-style: italic;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: ${surface};
+      }
+      ::-webkit-scrollbar-thumb {
+        background: ${line};
+        border-radius: 4px;
+      }
+      * {
+        scrollbar-color: ${line} ${surface};
+        scrollbar-width: thin;
+      }
+    `;
+
+    const isMobile = typeof window !== 'undefined' && window.matchMedia
+      ? window.matchMedia('(max-width: 768px)').matches
+      : false;
+
+    return {
+      license_key: 'gpl',
+      base_url: '/tinymce',
+      suffix: '.min',
+      promotion: false,
+      branding: false,
+      resize: false,
+      min_height: 380,
+      height: isMobile ? 380 : 420,
+      menubar: !isMobile,
+      skin: isDark ? 'oxide-dark' : 'oxide',
+      content_css: isDark ? 'dark' : 'default',
+      content_style: contentStyle,
+      placeholder: 'Write your journal entry here...',
+      plugins: [
+        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
+        'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table',
+        'wordcount', 'codesample', 'help', 'pagebreak', 'nonbreaking'
+      ],
+      toolbar: isMobile
+        ? 'undo redo | bold italic | bullist numlist | link codesample | ...'
+        : 'undo redo | styleselect | bold italic underline strikethrough | ' +
+          'alignleft aligncenter alignright alignjustify | outdent indent | ' +
+          'bullist numlist | link image media codesample | hr pagebreak | ' +
+          'fullscreen preview | charmap | insertdatetime | table | help | code',
+      toolbar_mode: isMobile ? 'sliding' : 'wrap',
+      setup: (editor: any) => {
+        this.cleanupEditorListeners();
+        this.currentEditor = editor;
+        this.editorInitHandler = () => {
+          if (typeof document !== 'undefined') {
+            document.querySelectorAll('editor').forEach(el => el.removeAttribute('aria-hidden'));
+          }
+          if (this.savedContentForReinit !== null) {
+            try {
+              editor.setContent(this.savedContentForReinit);
+              this.journalForm.get('content')?.setValue(this.savedContentForReinit, { emitEvent: true });
+              this.journalForm.get('content')?.markAsDirty();
+              this.journalForm.get('content')?.updateValueAndValidity();
+            } catch (e) {}
+            this.savedContentForReinit = null;
+          }
+          if (this.savedBookmark) {
+            try {
+              editor.selection?.moveToBookmark(this.savedBookmark);
+            } catch (e) {
+              // Graceful fallback
+            }
+            this.savedBookmark = null;
+          }
+        };
+        this.editorChangeHandler = () => {
+          const content = editor.getContent();
+          if (this.journalForm.get('content')?.value !== content) {
+            this.journalForm.get('content')?.setValue(content, { emitEvent: true });
+            this.journalForm.get('content')?.markAsDirty();
+            this.journalForm.get('content')?.updateValueAndValidity();
+          }
+        };
+        editor.on('init', this.editorInitHandler);
+        editor.on('change input undo redo SetContent keyup', this.editorChangeHandler);
+      }
+    };
+  }
+
+  private cleanupEditorListeners(): void {
+    if (this.currentEditor) {
+      if (this.editorInitHandler) {
+        try {
+          this.currentEditor.off('init', this.editorInitHandler);
+        } catch (e) {}
+        this.editorInitHandler = null;
+      }
+      if (this.editorChangeHandler) {
+        try {
+          this.currentEditor.off('change input undo redo SetContent keyup', this.editorChangeHandler);
+        } catch (e) {}
+        this.editorChangeHandler = null;
+      }
+      this.currentEditor = null;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.cleanupEditorListeners();
+  }
+
+  get publishDisabledReason(): string {
+    if (this.isSaving) return 'Saving in progress...';
+    const t = this.journalForm.get('title');
+    if (t?.invalid) {
+      if (t.errors?.['required']) return 'Title is required to publish.';
+      if (t.errors?.['minlength']) return 'Title must be at least 3 characters.';
+    }
+    const c = this.journalForm.get('content');
+    if (c?.invalid) {
+      if (c.errors?.['required']) return 'Content is required to publish.';
+      if (c.errors?.['minlength']) return 'Content must be at least 10 characters.';
+    }
+    const cat = this.journalForm.get('category');
+    if (cat?.invalid) return 'Category is required to publish.';
+    const d = this.journalForm.get('date');
+    if (d?.invalid) return 'A valid date is required to publish.';
+    if (this.journalForm.invalid) return 'Please complete all required fields to publish.';
+    return '';
+  }
+
+  private reinitEditorForTheme(): void {
+    let currentContent = this.journalForm.get('content')?.value;
+    if (this.currentEditor) {
+      try {
+        const liveContent = this.currentEditor.getContent();
+        if (liveContent) {
+          currentContent = liveContent;
+          this.journalForm.get('content')?.setValue(liveContent, { emitEvent: true });
+        }
+      } catch (e) {}
+      try {
+        this.savedBookmark = this.currentEditor.selection?.getBookmark(2, true);
+      } catch (e) {
+        this.savedBookmark = null;
+      }
+      this.cleanupEditorListeners();
+    }
+    this.savedContentForReinit = currentContent ?? null;
+    this.isEditorActive = false;
+    this.editorConfig = this.buildEditorConfig();
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.isEditorActive = true;
+      if (this.savedContentForReinit !== null) {
+        this.journalForm.get('content')?.setValue(this.savedContentForReinit, { emitEvent: true });
+      }
+      this.cdr.detectChanges();
+    }, 10);
   }
 
   loadJournalData(id: string): void {
@@ -91,6 +338,7 @@ export class AddJournalComponent implements OnInit {
         };
 
         this.journalForm.reset(formData);
+        setTimeout(() => this.autoResizeTitle(), 50);
         console.log('%c2. Form model has been reset (TinyMCE should update automatically).', 'color: skyblue;');
 
         if (journal.imageUrl && !journal.imageUrl.startsWith('http')) {

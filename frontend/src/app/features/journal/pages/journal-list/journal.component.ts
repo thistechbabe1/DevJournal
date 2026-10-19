@@ -4,12 +4,13 @@ import { Router, RouterModule } from '@angular/router';
 import { JournalService } from '../../services/journal-service.service';
 import { Journal } from '../../models/journal.model';
 import { environment } from '../../../../../environments/environment';
+import { JournalCoverComponent } from '../../../../shared/components/journal-cover/journal-cover.component';
 
 @Component({
   selector: 'app-journal',
   templateUrl: './journal.component.html',
   styleUrls: ['./journal.component.scss'],
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule, JournalCoverComponent]
 })
 export class JournalComponent implements OnInit {
   readonly isLoading = signal<boolean>(false);
@@ -22,7 +23,6 @@ export class JournalComponent implements OnInit {
     category: 'asc'
   });
 
-  readonly placeholderImage: string = 'assets/images/placeholder_journal.jpeg';
   private readonly backendUrl: string = environment.apiUrl;
 
   private readonly rawJournals = this.journalService.journals;
@@ -40,7 +40,7 @@ export class JournalComponent implements OnInit {
           dateObject = new Date();
         }
 
-        let fullImageUrl = this.placeholderImage;
+        let fullImageUrl: string | null = null;
         if (entry.imageUrl && typeof entry.imageUrl === 'string' && entry.imageUrl.trim() !== '') {
           if (
             entry.imageUrl.startsWith('http://') ||

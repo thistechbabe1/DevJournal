@@ -1,0 +1,106 @@
+.journal-cover-container {
+  display: block;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  background-color: var(--cover-bg, var(--color-surface));
+  border: 1px solid var(--cover-border, var(--color-line));
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  &.variant-card {
+    aspect-ratio: 16 / 9;
+  }
+
+  &.variant-banner {
+    aspect-ratio: 4 / 1;
+    border-radius: 8px;
+  }
+
+  // 5 Tints from tokens
+  &[data-tint="terracotta"] {
+    --cover-bg: var(--tint-terracotta-bg);
+    --cover-border: var(--tint-terracotta-border);
+    --cover-accent: var(--tint-terracotta-accent);
+    --cover-dot: var(--tint-terracotta-dot);
+  }
+
+  &[data-tint="ochre"] {
+    --cover-bg: var(--tint-ochre-bg);
+    --cover-border: var(--tint-ochre-border);
+    --cover-accent: var(--tint-ochre-accent);
+    --cover-dot: var(--tint-ochre-dot);
+  }
+
+  &[data-tint="sage"] {
+    --cover-bg: var(--tint-sage-bg);
+    --cover-border: var(--tint-sage-border);
+    --cover-accent: var(--tint-sage-accent);
+    --cover-dot: var(--tint-sage-dot);
+  }
+
+  &[data-tint="slate"] {
+    --cover-bg: var(--tint-slate-bg);
+    --cover-border: var(--tint-slate-border);
+    --cover-accent: var(--tint-slate-accent);
+    --cover-dot: var(--tint-slate-dot);
+  }
+
+  &[data-tint="clay"],
+  &[data-tint="plum-brown"] {
+    --cover-bg: var(--tint-clay-bg);
+    --cover-border: var(--tint-clay-border);
+    --cover-accent: var(--tint-clay-accent);
+    --cover-dot: var(--tint-clay-dot);
+  }
+
+  .cover-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .cover-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+
+    .bg-rect {
+      fill: var(--cover-bg);
+    }
+
+    .dot-circle {
+      fill: var(--cover-dot);
+    }
+
+    .cover-initial {
+      font-family: var(--font-heading, 'Fraunces', Georgia, serif);
+      font-size: 88px;
+      font-weight: 700;
+      fill: var(--cover-accent);
+      fill-opacity: 0.22;
+      user-select: none;
+    }
+
+    .banner-initial {
+      font-size: 110px;
+    }
+
+    .cover-rule {
+      stroke: var(--cover-border);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+    }
+
+    .cover-category {
+      font-family: var(--font-mono, 'JetBrains Mono', monospace);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      fill: var(--color-ink);
+      fill-opacity: 0.75;
+      user-select: none;
+    }
+  }
+}

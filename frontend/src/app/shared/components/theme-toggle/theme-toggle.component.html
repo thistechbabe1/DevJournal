@@ -1,0 +1,10 @@
+<button
+  type="button"
+  class="btn-theme-toggle"
+  (click)="toggleTheme()"
+  [attr.aria-label]="currentTheme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+  [attr.aria-pressed]="currentTheme() === 'dark'"
+  title="Toggle color theme"
+>
+  <i class="bi" [ngClass]="currentTheme() === 'dark' ? 'bi-sun' : 'bi-moon'" aria-hidden="true"></i>
+</button>

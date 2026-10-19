@@ -10,9 +10,10 @@
 }
 
 .journal-form {
-  background-color: var(--panel-bg-color);
-  border-radius: 1.5rem;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-modal);
   width: 100%;
   max-width: 960px;
   display: flex;
@@ -22,7 +23,7 @@
 
 .journal-header-section {
   padding: 2rem 2.5rem 1rem;
-  border-bottom: 1px solid rgba(var(--text-dark), 0.1);
+  border-bottom: 1px solid var(--color-line);
   margin-bottom: 1.5rem;
   display: flex;
   justify-content: space-between;
@@ -68,8 +69,8 @@ form {
     outline: none;
 
     &:focus {
-      border-color: var(--primary-purple);
-      box-shadow: 0 0 0 3px rgba(var(--primary-purple-rgb), 0.15);
+      border-color: var(--color-accent);
+      box-shadow: var(--focus-ring-shadow);
     }
 
     &::placeholder {
@@ -84,6 +85,16 @@ form {
         cursor: pointer;
       }
     }
+  }
+
+  .title-textarea {
+    resize: none;
+    overflow-y: hidden;
+    min-height: 48px;
+    line-height: 1.4;
+    font-family: inherit;
+    font-size: 1.15rem;
+    font-weight: 600;
   }
 
   .textarea-large {
@@ -133,18 +144,18 @@ form {
     justify-content: center;
 
     &:hover {
-      border-color: var(--primary-purple);
-      box-shadow: inset 0 0 10px rgba(var(--primary-purple-rgb), 0.2);
+      border-color: var(--color-accent);
+      box-shadow: var(--shadow-inner);
     }
 
-    p {
-      color: var(--text-dark);
+    .upload-title {
+      color: var(--color-ink);
       font-weight: 600;
       margin-bottom: 0.5rem;
     }
 
-    .text-white-50 {
-      color: var(--text-muted);
+    .upload-hint {
+      color: var(--color-muted);
       font-size: 0.9rem;
     }
 
@@ -225,25 +236,81 @@ form {
   border: 1px solid transparent;
 }
 
-.action-buttons {
-  padding: 2rem 0;
+.action-buttons-container {
+  padding: 2rem 0 1rem;
   display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
 
-  .btn-custom-secondary,
-  .btn-custom-primary {
-    min-width: 150px;
+  @media (max-width: 768px) {
+    align-items: stretch;
+    padding: 1.5rem 0 0.5rem;
   }
 }
 
-.tooltip-wrapper {
-  display: inline-block;
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  .journal-btn {
+    min-width: 150px;
+    height: 44px;
+    min-height: 44px;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .btn-publish {
+    background-color: var(--color-accent) !important;
+    border: 1px solid var(--color-accent) !important;
+    color: var(--color-surface) !important;
+
+    &:hover:not(:disabled) {
+      background-color: var(--btn-primary-hover-bg) !important;
+      border-color: var(--btn-primary-hover-border) !important;
+      color: var(--btn-primary-text) !important;
+    }
+
+    &:disabled {
+      background-color: var(--color-accent) !important;
+      border-color: var(--color-accent) !important;
+      color: var(--color-surface) !important;
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.75rem;
+
+    .journal-btn {
+      width: 100%;
+      min-width: 100%;
+      height: 44px;
+      min-height: 44px;
+    }
+  }
 }
 
-.tooltip-wrapper button:disabled {
-  pointer-events: none;
+.publish-disabled-reason {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  text-align: right;
+
+  @media (max-width: 768px) {
+    text-align: center;
+  }
 }
 
 @media (max-width: 768px) {
@@ -277,16 +344,6 @@ form {
 
   .alert {
     margin: 1rem 0;
-  }
-
-  .action-buttons {
-    padding: 1.5rem 0;
-    justify-content: center;
-    .btn-custom-secondary,
-    .btn-custom-primary {
-      width: 100%;
-      max-width: 250px;
-    }
   }
 }
 

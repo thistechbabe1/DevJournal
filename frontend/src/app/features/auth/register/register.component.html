@@ -1,117 +1,185 @@
-<div class="auth-page register-page">
-  <div class="left-panel">
-    <div class="form-card">
-      <h2 class="form-title animate__animated animate__fadeInDown">Create Account</h2>
+<div class="auth-page">
+  <div class="auth-layout">
+    <!-- Desktop Left Column: Headline + Short Paragraph Only -->
+    <aside class="auth-showcase d-none d-lg-flex" aria-label="DevJournal Overview">
+      <div class="showcase-content">
+        <h1 class="showcase-headline">
+          Build a habit of <span class="highlight-word">intentional</span> engineering.
+        </h1>
+        <p class="showcase-description">
+          Keep a searchable log of bugs fixed, architecture choices made, and daily learnings across your projects.
+        </p>
+      </div>
+    </aside>
 
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <div class="custom-input-field animate__animated animate__fadeInLeft">
-          <i class="fas fa-user"></i>
-          <input
-            type="text"
-            formControlName="name"
-            placeholder="Your Name"
-            required
-            />
-          </div>
-          @if (f['name'].invalid && f['name'].touched) {
-            <div class="error-message">
-              @if (f['name'].errors?.['required']) {
-                <span>Name is required.</span>
-              }
-            </div>
-          }
+    <!-- Auth Form Card -->
+    <main class="auth-form-panel">
+      <div class="auth-card">
+        <div class="auth-card-header">
+          <h2 class="form-title">Create account</h2>
+          <p class="form-subtitle">Start documenting your developer journey</p>
+        </div>
 
-          <div class="custom-input-field animate__animated animate__fadeInLeft animate__delay-0-1s">
-            <i class="fas fa-envelope"></i>
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="email@gmail.com"
-              required
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="form-field-group">
+            <label for="name" class="field-label">Full name</label>
+            <div class="custom-input-field">
+              <i class="bi bi-person" aria-hidden="true"></i>
+              <input
+                type="text"
+                id="name"
+                formControlName="name"
+                placeholder="Ada Lovelace"
+                autocomplete="name"
+                [attr.aria-describedby]="(f['name'].invalid && f['name'].touched) ? 'name-error' : null"
+                required
               />
             </div>
-            @if (f['email'].invalid && f['email'].touched) {
-              <div class="error-message">
-                @if (f['email'].errors?.['required']) {
-                  <span>Email is required.</span>
-                }
-                @if (f['email'].errors?.['email']) {
-                  <span>Enter a valid email address.</span>
+            @if (f['name'].invalid && f['name'].touched) {
+              <div class="error-message" id="name-error" role="alert">
+                @if (f['name'].errors?.['required']) {
+                  <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Name is required.
                 }
               </div>
             }
+          </div>
 
-            <div class="custom-input-field animate__animated animate__fadeInLeft animate__delay-0-3s">
-              <i class="fas fa-lock"></i>
+          <div class="form-field-group">
+            <label for="reg-email" class="field-label">Email address</label>
+            <div class="custom-input-field">
+              <i class="bi bi-envelope" aria-hidden="true"></i>
+              <input
+                type="email"
+                id="reg-email"
+                formControlName="email"
+                placeholder="name@example.com"
+                autocomplete="email"
+                [attr.aria-describedby]="(f['email'].invalid && f['email'].touched) ? 'reg-email-error' : null"
+                required
+              />
+            </div>
+            @if (f['email'].invalid && f['email'].touched) {
+              <div class="error-message" id="reg-email-error" role="alert">
+                @if (f['email'].errors?.['required']) {
+                  <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Email is required.
+                }
+                @if (f['email'].errors?.['email']) {
+                  <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Enter a valid email address.
+                }
+              </div>
+            }
+          </div>
+
+          <div class="form-field-group">
+            <label for="reg-password" class="field-label">Password</label>
+            <div class="custom-input-field">
+              <i class="bi bi-lock" aria-hidden="true"></i>
               <input
                 [type]="passwordFieldType"
+                id="reg-password"
                 formControlName="password"
-                placeholder="Enter your password"
+                placeholder="Minimum 6 characters"
+                autocomplete="new-password"
+                [attr.aria-describedby]="(f['password'].invalid && f['password'].touched) ? 'reg-password-error' : null"
                 required
-                />
-                <i class="fas" [ngClass]="{'fa-eye-slash': passwordFieldType === 'password', 'fa-eye': passwordFieldType === 'text'}" (click)="togglePasswordVisibility('password')"></i>
-              </div>
-              @if (f['password'].invalid && f['password'].touched) {
-                <div class="error-message">
-                  @if (f['password'].errors?.['required']) {
-                    <span>Password is required.</span>
-                  }
-                  @if (f['password'].errors?.['minlength']) {
-                    <span>Password must be at least 6 characters.</span>
-                  }
-                </div>
-              }
-
-              <div class="custom-input-field animate__animated animate__fadeInLeft animate__delay-0-4s">
-                <i class="fas fa-lock"></i>
-                <input
-                  [type]="confirmPasswordFieldType"
-                  formControlName="confirmPassword"
-                  placeholder="Confirm password"
-                  required
-                  />
-                  <i class="fas" [ngClass]="{'fa-eye-slash': confirmPasswordFieldType === 'password', 'fa-eye': confirmPasswordFieldType === 'text'}" (click)="togglePasswordVisibility('confirmPassword')"></i>
-                </div>
-                @if (f['confirmPassword'].invalid && f['confirmPassword'].touched) {
-                  <div class="error-message">
-                    @if (f['confirmPassword'].errors?.['required']) {
-                      <span>Confirm password is required.</span>
-                    }
-                  </div>
-                }
-                @if (form.hasError('mismatch') && f['confirmPassword'].touched) {
-                  <div class="error-message">
-                    Passwords do not match.
-                  </div>
-                }
-
-                <button type="submit" class="btn-custom-primary w-100 animate__animated animate__zoomIn animate__delay-0-5s" [disabled]="form.invalid || isLoading">
-                  @if (isLoading) {
-                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  }
-                  Create Account
-                </button>
-              </form>
-
-              <p class="account-prompt animate__animated animate__fadeInUp animate__delay-1-1s">
-                Already have an account?
-                <a routerLink="/login" class="text-link">Sign in</a>
-              </p>
-
-              @if (errorMessage) {
-                <div class="alert alert-danger text-center mt-3 animate__animated animate__fadeIn animate__delay-1-3s" role="alert">
-                  {{ errorMessage }}
-                </div>
-              }
-              @if (successMessage) {
-                <div class="alert alert-success text-center mt-3 animate__animated animate__fadeIn animate__delay-1-3s" role="alert">
-                  {{ successMessage }}
-                </div>
-              }
+              />
+              <button
+                type="button"
+                class="btn-toggle-eye"
+                (click)="togglePasswordVisibility('password')"
+                [attr.aria-label]="passwordFieldType === 'password' ? 'Show password' : 'Hide password'"
+              >
+                <i class="bi" [ngClass]="{'bi-eye-slash': passwordFieldType === 'password', 'bi-eye': passwordFieldType === 'text'}" aria-hidden="true"></i>
+              </button>
             </div>
+            @if (f['password'].invalid && f['password'].touched) {
+              <div class="error-message" id="reg-password-error" role="alert">
+                @if (f['password'].errors?.['required']) {
+                  <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Password is required.
+                }
+                @if (f['password'].errors?.['minlength']) {
+                  <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Password must be at least 6 characters.
+                }
+              </div>
+            }
           </div>
 
-          <div class="right-panel">
-            <img src="assets/images/register.png" alt="3D character writing on a book" class="character-image animate__animated animate__fadeInRight animate__delay-0-5s">
+          <div class="form-field-group">
+            <label for="confirm-password" class="field-label">Confirm password</label>
+            <div class="custom-input-field">
+              <i class="bi bi-lock-fill" aria-hidden="true"></i>
+              <input
+                [type]="confirmPasswordFieldType"
+                id="confirm-password"
+                formControlName="confirmPassword"
+                placeholder="Re-enter password"
+                autocomplete="new-password"
+                [attr.aria-describedby]="((f['confirmPassword'].invalid && f['confirmPassword'].touched) || (form.hasError('mismatch') && f['confirmPassword'].touched)) ? 'confirm-password-error' : null"
+                required
+              />
+              <button
+                type="button"
+                class="btn-toggle-eye"
+                (click)="togglePasswordVisibility('confirmPassword')"
+                [attr.aria-label]="confirmPasswordFieldType === 'password' ? 'Show confirm password' : 'Hide confirm password'"
+              >
+                <i class="bi" [ngClass]="{'bi-eye-slash': confirmPasswordFieldType === 'password', 'bi-eye': confirmPasswordFieldType === 'text'}" aria-hidden="true"></i>
+              </button>
+            </div>
+            @if (f['confirmPassword'].invalid && f['confirmPassword'].touched) {
+              <div class="error-message" id="confirm-password-error" role="alert">
+                @if (f['confirmPassword'].errors?.['required']) {
+                  <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Confirm password is required.
+                }
+              </div>
+            }
+            @if (form.hasError('mismatch') && f['confirmPassword'].touched) {
+              <div class="error-message" id="confirm-password-error" role="alert">
+                <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Passwords do not match.
+              </div>
+            }
           </div>
+
+          <button
+            type="submit"
+            class="btn-custom-primary w-100"
+            [disabled]="isLoading"
+            id="register-submit-btn"
+          >
+            @if (isLoading) {
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              <span>Creating account...</span>
+            } @else {
+              <span>Create account</span>
+            }
+          </button>
+        </form>
+
+        <div class="auth-card-footer">
+          <p class="account-prompt">
+            Already have an account?
+            <a routerLink="/login" class="link-hand-drawn">
+              <span>Sign in</span>
+              <svg class="hand-drawn-underline" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M 2 8 Q 25 3, 50 7 T 98 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+              </svg>
+            </a>
+          </p>
         </div>
+
+        @if (errorMessage) {
+          <div class="alert alert-danger text-center mt-3" role="alert">
+            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+            <span>{{ errorMessage }}</span>
+          </div>
+        }
+        @if (successMessage) {
+          <div class="alert alert-success text-center mt-3" role="alert">
+            <i class="bi bi-check-circle" aria-hidden="true"></i>
+            <span>{{ successMessage }}</span>
+          </div>
+        }
+      </div>
+    </main>
+  </div>
+</div>

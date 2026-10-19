@@ -1,8 +1,13 @@
 <div class="settings-page-wrapper">
   <div class="settings-container">
-    <div class="settings-section">
-      <h3 class="section-title">Update Profile</h3>
-      <div class="settings-card">
+    <div class="settings-header">
+      <h1 class="page-title">Settings</h1>
+      <p class="page-description">Manage your account information and preferences.</p>
+    </div>
+
+    <div class="settings-card">
+      <section class="settings-group" aria-labelledby="profile-heading">
+        <h2 id="profile-heading" class="group-title">Profile</h2>
         <div class="form-group">
           <label for="userName">Name</label>
           <input
@@ -11,6 +16,7 @@
             class="form-control"
             [ngModel]="userName()"
             (ngModelChange)="userName.set($event)"
+            autocomplete="name"
           />
         </div>
         <div class="form-group">
@@ -21,21 +27,29 @@
             class="form-control"
             [ngModel]="userEmail()"
             (ngModelChange)="userEmail.set($event)"
+            autocomplete="email"
           />
         </div>
+      </section>
+
+      <div class="section-divider" role="separator"></div>
+
+      <section class="settings-group" aria-labelledby="password-heading">
+        <h2 id="password-heading" class="group-title">Password</h2>
         <div class="form-group">
-          <label for="currentPassword">Current Password</label>
+          <label for="currentPassword">Current password</label>
           <input
             type="password"
             id="currentPassword"
             class="form-control"
             [ngModel]="currentPassword()"
             (ngModelChange)="currentPassword.set($event)"
-            placeholder="Required for email/password changes"
+            placeholder="Required for changes"
+            autocomplete="current-password"
           />
         </div>
         <div class="form-group">
-          <label for="newPassword">New Password</label>
+          <label for="newPassword">New password</label>
           <input
             type="password"
             id="newPassword"
@@ -43,24 +57,29 @@
             [ngModel]="newPassword()"
             (ngModelChange)="newPassword.set($event)"
             placeholder="Leave blank to keep current"
+            autocomplete="new-password"
           />
         </div>
+      </section>
+
+      <div class="settings-actions">
         <button
-          class="btn btn-primary"
+          class="btn-primary"
           (click)="updateProfile()"
           [disabled]="isUpdatingProfile()"
         >
           @if (isUpdatingProfile()) {
             <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
           }
-          {{ isUpdatingProfile() ? 'Updating...' : 'Update Profile' }}
+          {{ isUpdatingProfile() ? 'Updating...' : 'Update profile' }}
         </button>
-        @if (profileMessage()) {
-          <p [class]="profileMessageClass()">
-            {{ profileMessage() }}
-          </p>
-        }
       </div>
+
+      @if (profileMessage()) {
+        <div [class]="'profile-alert ' + profileMessageClass()" role="alert">
+          {{ profileMessage() }}
+        </div>
+      }
     </div>
   </div>
 </div>

@@ -1,38 +1,47 @@
-<nav class="navbar navbar-expand-lg navbar-dark border-bottom position-fixed bg-dark px-3 py-2">
-  <div class="container-fluid">
-    <a class="navbar-brand d-flex align-items-center gap-2" routerLink="/dashboard">
-      <img src="assets/logo.svg" alt="DevJournal App Logo" class="app-logo" />
+<nav class="app-navbar" role="navigation" aria-label="Main Navigation">
+  <div class="navbar-container">
+    <a class="navbar-brand" routerLink="/">
+      <span class="brand-icon"><i class="bi bi-journal-text" aria-hidden="true"></i></span>
+      <span class="brand-name">DevJournal</span>
     </a>
 
-    @if (isLoggedIn()) {
-      <button
-        class="navbar-toggler"
-        type="button"
-        (click)="toggleNavbar()" [attr.aria-expanded]="!isCollapsed()" aria-label="Toggle navigation"
+    <div class="navbar-actions">
+      <!-- Theme Toggle: standalone component with consistent accessibility and icon rule -->
+      <app-theme-toggle></app-theme-toggle>
+
+      @if (isLoggedIn()) {
+        <button
+          class="navbar-toggler d-lg-none"
+          type="button"
+          (click)="toggleNavbar()"
+          [attr.aria-expanded]="!isCollapsed()"
+          aria-label="Toggle navigation"
         >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="navbar-collapse" [ngClass]="{'collapse': isCollapsed(), 'show': !isCollapsed()}" id="navbarNavContent">
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/journal" routerLinkActive="active">Logs</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/chat" routerLinkActive="active">AI Assistant</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/settings" routerLinkActive="active">Settings</a>
-          </li>
-          <li class="nav-item ms-lg-3">
-            <button class="btn btn-sm btn-outline-light" (click)="logout()">
-              Logout
-            </button>
-          </li>
-        </ul>
-      </div>
-    }
+          <i class="bi" [ngClass]="isCollapsed() ? 'bi-list' : 'bi-x-lg'" aria-hidden="true"></i>
+        </button>
+
+        <div class="navbar-menu" [ngClass]="{'is-open': !isCollapsed()}">
+          <ul class="nav-links">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/journal" routerLinkActive="active">Logs</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/chat" routerLinkActive="active">AI Assistant</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/settings" routerLinkActive="active">Settings</a>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="btn-logout" (click)="logout()">
+                Log out
+              </button>
+            </li>
+          </ul>
+        </div>
+      }
+    </div>
   </div>
 </nav>

@@ -3,6 +3,9 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 
 const generateToken = (user) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('FATAL: JWT_SECRET environment variable is missing.');
+  }
   const payload = {
     id: user._id.toString(),
     userId: user._id.toString(),
@@ -10,7 +13,7 @@ const generateToken = (user) => {
     name: user.name,
   };
   const expiresIn = process.env.JWT_EXPIRES_IN || "24h";
-  return jwt.sign(payload, process.env.JWT_SECRET || "dev_secret", { expiresIn });
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
 };
 
 const loginUser = async (req, res) => {
