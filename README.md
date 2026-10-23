@@ -153,8 +153,9 @@ Upgrading Angular from v16 across six major versions to v21 was conducted one ma
 
 ---
 
-## 📜 Licences and Credits
+## Licences and Credits
 
-- **DevJournal**: Licensed under the GNU General Public License v2.0 or later ([`LICENSE`](file:///c:/Users/HP/Documents/Github/DevJournal/LICENSE)).
-- **TinyMCE**: Self-hosted under the GNU General Public License v2.0 or later (`GPL-2.0-or-later`, `license_key: 'gpl'`). Rich text editor assets are bundled locally without cloud API dependencies or remote tracking.
-- **Third-Party Open Source Software**: DevJournal builds upon standard permissive open source libraries (Angular, Bootstrap, Marked, Express, Mongoose, and related ecosystems) licensed under MIT, Apache-2.0, 0BSD, and BSD-2-Clause.
+- **DevJournal**: Licensed under the GNU General Public License v3.0 or later ([`LICENSE`](file:///c:/Users/HP/Documents/Github/DevJournal/LICENSE)).
+- **TinyMCE**: Self-hosted under the GNU General Public License v2.0 or later (`GPL-2.0-or-later`, `license_key: 'gpl'`), which is fully compatible with and distributable under GPL-3.0-or-later via its "or later" provision. Rich text editor assets are bundled locally without cloud API dependencies or remote tracking.
+- **Apache-2.0 Dependencies**: Runtime libraries including `@google/generative-ai` and `rxjs` are licensed under the Apache License 2.0, which is officially compatible with GPLv3.
+- **Permissive Open Source Software**: Other foundational runtime dependencies (Angular, Bootstrap, Marked, Express, Mongoose, and related libraries) are licensed under permissive licenses (MIT, BSD-2-Clause, and 0BSD) fully compatible with GPL-3.0-or-later.

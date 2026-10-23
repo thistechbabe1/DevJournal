@@ -323,6 +323,17 @@ async function run() {
       throw new Error(`[FAIL] Text "hello world" not found in iframe body! Found: "${bodyText}"`);
     }
 
+    // Assert the 4 mobile toolbar buttons are visible at 390px (Bold, Italic, Bullet list, Link)
+    const isBoldVis = await page.locator('.tox-tbtn[aria-label="Bold"]').first().isVisible();
+    const isItalicVis = await page.locator('.tox-tbtn[aria-label="Italic"]').first().isVisible();
+    const isBullistVis = await page.locator('[aria-label*="bullet" i]').first().isVisible();
+    const isLinkVis = await page.locator('.tox-tbtn[aria-label*="link" i]').first().isVisible();
+
+    console.log(`[ASSERT] [${theme}] 390px mobile toolbar buttons visible - Bold: ${isBoldVis}, Italic: ${isItalicVis}, Bullist: ${isBullistVis}, Link: ${isLinkVis}`);
+    if (!isBoldVis || !isItalicVis || !isBullistVis || !isLinkVis) {
+      throw new Error(`[FAIL] Primary mobile toolbar buttons not all visible at 390px! (bold: ${isBoldVis}, italic: ${isItalicVis}, bullist: ${isBullistVis}, link: ${isLinkVis})`);
+    }
+
     // Capture after typing
     const afterCapturePath = path.join(artifactsDir, `add_journal_390_after_${theme}.png`);
     await page.screenshot({ path: afterCapturePath, fullPage: true });
@@ -382,6 +393,62 @@ async function run() {
       }
     }
     console.log(`[PASS] VP: ${String(vp).padStart(4)}px | Chat <pre> elements (${chatPreMetrics.length}) contained visually within bubble with overflow-x: auto.`);
+    await context.close();
+  }
+
+  console.log('\n================ 1c2. Editor Iframe Code Block Bounding Box & Scroll Assertions ================');
+  for (const vp of [320, 390]) {
+    const context = await browser.newContext({
+      viewport: { width: vp, height: 844 },
+      deviceScaleFactor: 2,
+      isMobile: true,
+      hasTouch: true
+    });
+    await setupApiMocks(context);
+    await context.addInitScript((t) => sessionStorage.setItem('token', t), mockToken);
+    const page = await context.newPage();
+
+    await navigateTo(page, `http://127.0.0.1:${port}/add-journal`);
+    await page.waitForSelector('.tox-edit-area iframe', { timeout: 10000 });
+    await page.waitForTimeout(400);
+
+    await page.evaluate(() => {
+      if (window.tinymce && window.tinymce.get('content')) {
+        window.tinymce.get('content').setContent(
+          '<p>Testing code block overflow in mobile editor:</p>' +
+          '<pre><code>const longConfig = "token_authentication_service_configured_with_extended_jwt_key_verification_parameter_string";</code></pre>' +
+          '<p>End of test entry.</p>'
+        );
+      }
+    });
+    await page.waitForTimeout(400);
+
+    const editorFrame = page.frameLocator('.tox-edit-area iframe');
+    const editorPreMetrics = await editorFrame.locator('pre').evaluateAll((pres) => {
+      return pres.map(pre => {
+        const style = window.getComputedStyle(pre);
+        const pRect = pre.getBoundingClientRect();
+        const bRect = document.body.getBoundingClientRect();
+        return {
+          overflowX: style.overflowX,
+          scrollWidth: pre.scrollWidth,
+          clientWidth: pre.clientWidth,
+          preRight: Math.round(pRect.right),
+          bodyRight: Math.round(bRect.right),
+          isClipped: pRect.right > bRect.right + 2
+        };
+      });
+    });
+
+    for (const m of editorPreMetrics) {
+      if (m.isClipped) {
+        throw new Error(`[FAIL] VP ${vp}px: Editor <pre> is visually clipped outside iframe body! preRight: ${m.preRight}px, bodyRight: ${m.bodyRight}px`);
+      }
+      if (m.overflowX !== 'auto' && m.overflowX !== 'scroll') {
+        throw new Error(`[FAIL] VP ${vp}px: Editor <pre> overflowX is "${m.overflowX}", expected "auto"!`);
+      }
+    }
+    console.log(`[PASS] VP: ${String(vp).padStart(4)}px | Editor iframe <pre> elements (${editorPreMetrics.length}) contained visually within body with overflow-x: auto.`);
     await context.close();
   }
 
@@ -607,15 +674,20 @@ async function run() {
             }
             if (window.tinymce && window.tinymce.get('content')) {
               window.tinymce.get('content').setContent(
-                '<p>Today we finalized the migration of the design system to the <strong>Field Notebook</strong> aesthetic.</p><blockquote>Clean typography, warm paper surfaces, authentic styling.</blockquote><pre><code>const theme = "field-notebook";\nconsole.log("Tokens active:", theme);</code></pre><p>All interactive elements now follow WCAG AA contrast guidelines.</p>'
+                '<p>Today we finalized the migration of the design system to the <strong>Field Notebook</strong> aesthetic.</p>' +
+                '<blockquote>Clean typography, warm paper surfaces, authentic styling.</blockquote>' +
+                '<p>All interactive elements now follow WCAG AA contrast guidelines with responsive layouts across mobile and desktop viewports.</p>' +
+                '<pre><code>const theme = "field-notebook";\nconsole.log("Tokens active:", theme);</code></pre>' +
+                '<p>Field notes verified across all target viewports.</p>'
               );
             }
           });
 
-          // Focus editor iframe, click inside, and type text to verify focus and collapsed toolbar
+          // Focus editor iframe, click inside the last paragraph, and type text cleanly
           const editorFrame = page.frameLocator('.tox-edit-area iframe');
-          await editorFrame.locator('body').click().catch(() => {});
-          await page.keyboard.insertText(' Field notes verified.').catch(() => {});
+          await editorFrame.locator('p').last().click().catch(() => {});
+          await page.keyboard.press('End');
+          await page.keyboard.insertText(' Ready for production.').catch(() => {});
           await page.waitForTimeout(400);
         } else if (screen.id === 'chat') {
           await page.waitForSelector('.chat-textarea', { timeout: 5000 }).catch(() => {});

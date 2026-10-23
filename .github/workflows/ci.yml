@@ -67,3 +67,6 @@ jobs:
       - name: Build Frontend Application
         working-directory: frontend
         run: npm run build
+
+      - name: Verify Netlify Build & Routing Rules
+        run: npm run check:netlify

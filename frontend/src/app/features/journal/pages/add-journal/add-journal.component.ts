@@ -133,10 +133,20 @@ export class AddJournalComponent implements OnInit, OnDestroy {
       pre {
         background-color: ${surface};
         border: 1px solid ${line};
-        padding: 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 6px;
         font-family: ${fontMono};
+        font-size: 0.9em;
+        line-height: 1.5;
         overflow-x: auto;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      pre code {
+        background-color: transparent;
+        padding: 0;
+        border-radius: 0;
+        font-size: inherit;
       }
       blockquote {
         border-left: 3px solid ${accent};
@@ -186,7 +196,7 @@ export class AddJournalComponent implements OnInit, OnDestroy {
         'wordcount', 'codesample', 'help', 'pagebreak', 'nonbreaking'
       ],
       toolbar: isMobile
-        ? 'undo redo | bold italic | bullist numlist | link codesample | ...'
+        ? 'bold italic bullist link | undo redo numlist codesample code'
         : 'undo redo | styleselect | bold italic underline strikethrough | ' +
           'alignleft aligncenter alignright alignjustify | outdent indent | ' +
           'bullist numlist | link image media codesample | hr pagebreak | ' +

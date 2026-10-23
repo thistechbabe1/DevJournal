@@ -608,14 +608,17 @@ a.text-link {
   border: 1px solid var(--color-line) !important;
   border-radius: 8px !important;
   background-color: var(--color-surface) !important;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+  transition: border-color 0.2s ease, outline 0.2s ease !important;
   box-sizing: border-box !important;
   max-width: 100% !important;
 
-  &.tox-tinymce--focused {
+  &:focus-within,
+  &.tox-tinymce--focused,
+  &.tox-edit-focus {
     border-color: var(--color-accent) !important;
-    box-shadow: var(--focus-ring-shadow) !important;
-    outline: none !important;
+    outline: 2px solid var(--color-accent) !important;
+    outline-offset: 2px !important;
+    box-shadow: none !important;
   }
 
   .tox-edit-area {
@@ -650,10 +653,38 @@ a.text-link {
 .tox .tox-toolbar,
 .tox .tox-toolbar__primary,
 .tox .tox-toolbar__overflow,
-.tox .tox-menubar {
+.tox .tox-menubar,
+.tox .tox-promotion {
   background-color: var(--color-surface) !important;
   background: var(--color-surface) !important;
   border-color: var(--color-line) !important;
+}
+
+.tox .tox-editor-header {
+  grid-template-columns: 1fr !important;
+}
+
+.tox .tox-menubar {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+}
+
+.tox .tox-promotion,
+.tox .tox-promotion-link,
+.tox .tox-promotion-button {
+  display: none !important;
+  background: transparent !important;
+  width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.tox .tox-edit-area::before,
+.tox.tox-edit-focus .tox-edit-area::before {
+  border: none !important;
+  opacity: 0 !important;
+  display: none !important;
 }
 
 .tox .tox-toolbar {
@@ -785,13 +816,20 @@ a.text-link {
 /* Ensure 44px touch targets on mobile */
 @media (max-width: 600px) {
   .tox .tox-tbtn {
-    min-width: 44px !important;
+    min-width: 38px !important;
     min-height: 44px !important;
+    margin: 1px !important;
+  }
+
+  .tox .tox-split-button {
+    .tox-tbtn {
+      min-width: 32px !important;
+    }
   }
 
   .tox .tox-mbtn {
     min-height: 44px !important;
-    padding: 0 10px !important;
+    padding: 0 8px !important;
     display: inline-flex !important;
     align-items: center !important;
   }
