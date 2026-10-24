@@ -10,9 +10,11 @@
     "start": "node scripts/dev.js",
     "start:backend": "npm start --prefix backend",
     "start:frontend": "npm start --prefix frontend",
-    "test": "npm test --prefix backend",
+    "test": "node scripts/check-no-hardcoded-colors.mjs && npm test --prefix backend",
     "test:backend": "npm test --prefix backend",
-    "test:frontend": "npm test --prefix frontend",
+    "test:frontend": "node scripts/check-no-hardcoded-colors.mjs && npm test --prefix frontend",
+    "check:colors": "node scripts/check-no-hardcoded-colors.mjs",
+    "check:netlify": "node scripts/verify-netlify-build.mjs",
     "build:frontend": "npm run build --prefix frontend"
   }
 }

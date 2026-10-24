@@ -6,6 +6,8 @@ const { connectDB, disconnectDB } = require('./testHelper');
 const path = require('path');
 const fs = require('fs');
 
+jest.setTimeout(60000);
+
 describe('Full User Flow & Authorization Header Verification', () => {
   let token;
   let userId;

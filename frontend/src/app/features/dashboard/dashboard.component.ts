@@ -30,6 +30,9 @@ export class DashboardComponent implements OnInit {
   readonly totalJournals = this.journalService.publishedCount;
   readonly draftCount = this.journalService.draftCount;
 
+  readonly journalPlural = computed(() => (this.totalJournals() === 1 ? 'journal' : 'journals'));
+  readonly draftPlural = computed(() => (this.draftCount() === 1 ? 'draft' : 'drafts'));
+
   readonly activities = computed(() => {
     const valid = this.journals().filter((j: any) => j != null);
     const sorted = [...valid].sort(

@@ -1,0 +1,105 @@
+<div
+  class="journal-cover-container"
+  [class.variant-card]="variant === 'card'"
+  [class.variant-banner]="variant === 'banner'"
+  [attr.data-tint]="tint()"
+  aria-hidden="true"
+>
+  @if (hasValidImage()) {
+    <img
+      [src]="imageUrl"
+      (error)="onImageError()"
+      loading="lazy"
+      alt=""
+      class="cover-image"
+    />
+  } @else {
+    @if (variant === 'card') {
+      <svg
+        class="cover-svg"
+        viewBox="0 0 320 180"
+        preserveAspectRatio="xMidYMid meet"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <pattern
+            [id]="uniqueId"
+            width="16"
+            height="16"
+            patternUnits="userSpaceOnUse"
+          >
+            <circle cx="2" cy="2" r="1" class="dot-circle" />
+          </pattern>
+        </defs>
+
+        <!-- Base tinted paper -->
+        <rect width="100%" height="100%" class="bg-rect" />
+
+        <!-- Dot grid pattern -->
+        <rect width="100%" height="100%" [attr.fill]="'url(#' + uniqueId + ')'" />
+
+        <!-- Large serif initial in accent color at low opacity -->
+        <text
+          x="50%"
+          y="56%"
+          text-anchor="middle"
+          dominant-baseline="central"
+          class="cover-initial"
+        >
+          {{ initial() }}
+        </text>
+
+        <!-- Ruled line -->
+        <line x1="20" y1="140" x2="300" y2="140" class="cover-rule" />
+
+        <!-- Category in small mono type -->
+        <text x="22" y="160" class="cover-category">
+          {{ displayCategory() }}
+        </text>
+      </svg>
+    } @else {
+      <svg
+        class="cover-svg"
+        viewBox="0 0 800 200"
+        preserveAspectRatio="xMidYMid meet"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <pattern
+            [id]="uniqueId"
+            width="16"
+            height="16"
+            patternUnits="userSpaceOnUse"
+          >
+            <circle cx="2" cy="2" r="1" class="dot-circle" />
+          </pattern>
+        </defs>
+
+        <!-- Base tinted paper -->
+        <rect width="100%" height="100%" class="bg-rect" />
+
+        <!-- Dot grid pattern -->
+        <rect width="100%" height="100%" [attr.fill]="'url(#' + uniqueId + ')'" />
+
+        <!-- Large serif initial in accent color at low opacity -->
+        <text
+          x="120"
+          y="50%"
+          text-anchor="middle"
+          dominant-baseline="central"
+          class="cover-initial banner-initial"
+        >
+          {{ initial() }}
+        </text>
+
+        <!-- Ruled line -->
+        <line x1="220" y1="150" x2="760" y2="150" class="cover-rule" />
+
+        <!-- Category in small mono type -->
+        <text x="222" y="174" class="cover-category">
+          {{ displayCategory() }}
+        </text>
+      </svg>
+    }
+  }
+</div>

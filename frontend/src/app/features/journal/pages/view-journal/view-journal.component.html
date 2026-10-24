@@ -1,6 +1,6 @@
 <div class="view-journal-wrapper">
-  <div class="container py-4 px-5">
-    <div class="row justify-content-center">
+  <div class="container py-3 px-2 px-sm-3">
+    <div class="row justify-content-center m-0">
       <div class="col-lg-10">
         @if (isLoading) {
           <div class="text-center text-white mt-5">
@@ -48,14 +48,14 @@
         }
 
         @if (!isLoading && !errorMessage && journalEntry) {
-          <div class="d-flex flex-wrap gap-2 py-3">
-            <a class="text-muted" routerLink="/journal">Journals</a>
-            <span class="text-muted">/</span>
-            <span class="text-white">{{ journalEntry.title }}</span>
-          </div>
-          <h2 class="text-white fs-2 fw-bold pt-3 pb-2">
+          <nav class="journal-breadcrumb" aria-label="Breadcrumb">
+            <a class="breadcrumb-link" routerLink="/journal">
+              <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Journals
+            </a>
+          </nav>
+          <h1 class="journal-entry-title">
             {{ journalEntry.title }}
-          </h2>
+          </h1>
           <p class="text-muted small">
             Written on: {{ journalEntry.date | date : "mediumDate" }}
           </p>
@@ -71,23 +71,15 @@
               Category: {{ journalEntry.category }}
             </p>
           }
-          @if (journalEntry.imageUrl) {
-            <div class="my-4 text-center">
-              <img
-                [src]="journalEntry.imageUrl"
-                class="img-fluid rounded"
-                crossorigin="anonymous"
-                alt="Journal Image"
-                />
-              </div>
-            }
-            @if (!journalEntry.imageUrl) {
-              <div
-                class="bg-dark p-3 rounded text-center text-muted my-4"
-                >
-                No image for this entry.
-              </div>
-            }
+          <div class="my-4">
+            <app-journal-cover
+              [journalId]="journalEntry._id"
+              [title]="journalEntry.title"
+              [category]="journalEntry.category"
+              [imageUrl]="journalEntry.imageUrl"
+              variant="banner"
+            ></app-journal-cover>
+          </div>
             <div
               class="journal-content-display"
               [innerHTML]="journalEntry.content | safeHtml"

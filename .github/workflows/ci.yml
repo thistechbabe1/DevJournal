@@ -57,6 +57,9 @@ jobs:
         working-directory: frontend
         run: npm run lint --if-present
 
+      - name: Check Component Design Tokens Guardrail
+        run: node scripts/check-no-hardcoded-colors.mjs
+
       - name: Run Frontend Tests
         working-directory: frontend
         run: npm test -- --watch=false --browsers=ChromeHeadless
@@ -64,3 +67,6 @@ jobs:
       - name: Build Frontend Application
         working-directory: frontend
         run: npm run build
+
+      - name: Verify Netlify Build & Routing Rules
+        run: npm run check:netlify

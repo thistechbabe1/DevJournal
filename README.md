@@ -150,3 +150,12 @@ Rather than attempting a high-risk "big bang" rewrite of all components from RxJ
 Upgrading Angular from v16 across six major versions to v21 was conducted one major version at a time (`v16 -> v17 -> v18 -> v19 -> v20 -> v21`):
 - Every step validated peer dependencies (`typescript`, `zone.js`, `ngx-markdown`, `marked`), retired plugins (e.g., TinyMCE's obsolete `print`, `paste`, `hr`), and asserted identical test passing counts before proceeding.
 - Breaking build tools were addressed in isolated milestones (such as the Angular 19+ application builder migration) rather than compounded with framework version bumps.
+
+---
+
+## Licences and Credits
+
+- **DevJournal**: Licensed under the GNU General Public License v3.0 or later ([`LICENSE`](file:///c:/Users/HP/Documents/Github/DevJournal/LICENSE)).
+- **TinyMCE**: Self-hosted under the GNU General Public License v2.0 or later (`GPL-2.0-or-later`, `license_key: 'gpl'`), which is fully compatible with and distributable under GPL-3.0-or-later via its "or later" provision. Rich text editor assets are bundled locally without cloud API dependencies or remote tracking.
+- **Apache-2.0 Dependencies**: Runtime libraries including `@google/generative-ai` and `rxjs` are licensed under the Apache License 2.0, which is officially compatible with GPLv3.
+- **Permissive Open Source Software**: Other foundational runtime dependencies (Angular, Bootstrap, Marked, Express, Mongoose, and related libraries) are licensed under permissive licenses (MIT, BSD-2-Clause, and 0BSD) fully compatible with GPL-3.0-or-later.

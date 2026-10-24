@@ -12,30 +12,28 @@
     <div class="journal-summary-section">
       <div class="summary-card">
         <div class="summary-text-content">
-          <p class="card-title">Journal Summary</p>
+          <h2 class="card-title">Journal summary</h2>
           <p class="card-details">
             You've written
-            <span class="highlight">{{ totalJournals() }}</span> journals, saved
-            <span class="highlight">{{ draftCount() }}</span> drafts, and your
+            <span class="highlight">{{ totalJournals() }}</span> {{ journalPlural() }}, saved
+            <span class="highlight">{{ draftCount() }}</span> {{ draftPlural() }}, and your
             last activity was on
-            <span class="highlight">
-              {{ formattedLastActivityDate() }}</span
-            >
+            <span class="highlight">{{ formattedLastActivityDate() }}</span>
           </p>
         </div>
-        <div class="visual-placeholder">
-          <img src="assets/images/placeholder_journal.jpeg" alt="Placeholder Image" />
+        <div class="summary-icon-box" aria-hidden="true">
+          <i class="bi bi-journal-bookmark-fill"></i>
         </div>
       </div>
     </div>
 
     <div class="ai-tips-section">
       <div class="tip-card">
-        <p class="card-title">Dev Tip of the Day</p>
+        <h2 class="card-title">Dev tip of the day</h2>
         <p class="tip-text">{{ aiTip() }}</p>
         <div class="tip-actions">
-          <button class="btn-get-new-tip" (click)="getNewAiTip()">
-            New Tip
+          <button class="btn btn-secondary btn-sm" (click)="getNewAiTip()">
+            New tip
           </button>
         </div>
       </div>
@@ -43,7 +41,7 @@
 
     <div class="quick-entry-section">
       <div class="quick-entry-card">
-        <p class="card-title">Quick Note</p>
+        <h2 class="card-title">Quick note</h2>
         <textarea
           class="form-control"
           rows="3"
@@ -52,16 +50,16 @@
         ></textarea>
         <div class="quick-entry-actions">
           <button class="btn btn-primary" (click)="submitQuickEntry()">
-            Save Note
+            Save note
           </button>
           <button class="btn btn-secondary" routerLink="/add-journal">
-            Full Entry
+            Full entry
           </button>
         </div>
       </div>
     </div>
 
-    <h2 class="section-title">Recent Activity</h2>
+    <h2 class="section-title">Recent activity</h2>
 
     <div class="recent-activity-list">
       @for (activity of activities(); track activity._id ?? $index) {

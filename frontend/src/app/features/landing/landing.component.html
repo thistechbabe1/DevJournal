@@ -1,0 +1,249 @@
+<div class="landing-page">
+  <!-- 1. Hero Section -->
+  <header class="landing-hero" id="hero-section">
+    <div class="landing-container">
+      <h1 class="hero-title">
+        The Intelligent Logbook for
+        thoughtful <span class="highlight-word">software engineers</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Document bugs resolved, architectural trade-offs, and daily breakthroughs. 
+        Reflect on your engineering growth with automated Gemini-powered insights and an interactive AI mentor.
+      </p>
+
+      <div class="hero-actions">
+        <a routerLink="/register" class="btn-primary hero-btn" id="hero-cta-register">
+          <span>Create account</span>
+          <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+        </a>
+        <a routerLink="/login" class="btn-secondary hero-btn" id="hero-cta-login">
+          <span>Sign in</span>
+        </a>
+      </div>
+
+      <!-- Real App Preview (Theme-switched with responsive picture crops) -->
+      <div class="hero-preview-wrapper" aria-label="DevJournal application preview">
+        <div class="preview-card">
+          <picture class="preview-picture preview-light">
+            <source
+              media="(max-width: 600px)"
+              srcset="assets/images/app-preview-mobile-light.webp"
+              width="390"
+              height="520"
+              type="image/webp"
+            />
+            <img
+              src="assets/images/app-preview-light.webp"
+              alt="DevJournal interface in light theme showing real journal entries with custom cover art, tags, and categories"
+              width="1200"
+              height="675"
+              loading="lazy"
+              class="preview-img"
+            />
+          </picture>
+
+          <picture class="preview-picture preview-dark">
+            <source
+              media="(max-width: 600px)"
+              srcset="assets/images/app-preview-mobile-dark.webp"
+              width="390"
+              height="520"
+              type="image/webp"
+            />
+            <img
+              src="assets/images/app-preview-dark.webp"
+              alt="DevJournal interface in dark theme showing real journal entries with custom cover art, tags, and categories"
+              width="1200"
+              height="675"
+              loading="lazy"
+              class="preview-img"
+            />
+          </picture>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. Four Feature Cards Section -->
+  <section class="landing-section features-section" id="features">
+    <div class="landing-container">
+      <div class="section-header text-center">
+        <h2 class="section-title">Engineered for your daily workflow</h2>
+        <p class="section-subtitle">
+          Everything you need to capture knowledge, reflect on technical decisions, and build lasting expertise.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1: Rich Editor -->
+        <article class="feature-card">
+          <div class="feature-icon-box">
+            <i class="bi bi-journal-code" aria-hidden="true"></i>
+          </div>
+          <h3 class="feature-card-title">Rich engineering editor</h3>
+          <p class="feature-card-text">
+            Write structured entries with code syntax highlighting, custom categories, tags, and generated cover banners.
+          </p>
+        </article>
+
+        <!-- Feature 2: Automated AI Reflections -->
+        <article class="feature-card">
+          <div class="feature-icon-box">
+            <i class="bi bi-stars" aria-hidden="true"></i>
+          </div>
+          <h3 class="feature-card-title">Automated Gemini reflections</h3>
+          <p class="feature-card-text">
+            Google Gemini analyzes your technical notes upon saving, surfacing key takeaways, sentiment trends, and topic summaries.
+          </p>
+        </article>
+
+        <!-- Feature 3: Conversational AI Mentor -->
+        <article class="feature-card">
+          <div class="feature-icon-box">
+            <i class="bi bi-chat-left-dots" aria-hidden="true"></i>
+          </div>
+          <h3 class="feature-card-title">Interactive AI mentor</h3>
+          <p class="feature-card-text">
+            A dedicated coding assistant to discuss software patterns, brainstorm design trade-offs, and review solutions.
+          </p>
+        </article>
+
+        <!-- Feature 4: PDF Export -->
+        <article class="feature-card">
+          <div class="feature-icon-box">
+            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+          </div>
+          <h3 class="feature-card-title">One-click PDF export</h3>
+          <p class="feature-card-text">
+            Export formatted reports of your entries and AI reflections for standups, sprint reviews, or personal archives.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. How It Works Section -->
+  <section class="landing-section workflow-section" id="how-it-works">
+    <div class="landing-container">
+      <div class="section-header text-center">
+        <h2 class="section-title">From daily commit to long-term mastery</h2>
+        <p class="section-subtitle">
+          Three simple steps to build an indispensable technical record.
+        </p>
+      </div>
+
+      <div class="workflow-steps">
+        <!-- Step 1 -->
+        <div class="workflow-step-card">
+          <div class="step-num" aria-hidden="true">01</div>
+          <div class="step-content">
+            <h3 class="step-title">Capture technical logs</h3>
+            <p class="step-desc">
+              When solving an issue or concluding a work session, record your code, decisions, and findings in your private journal.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="workflow-step-card">
+          <div class="step-num" aria-hidden="true">02</div>
+          <div class="step-content">
+            <h3 class="step-title">Review AI reflections</h3>
+            <p class="step-desc">
+              Examine automatically generated takeaways and sentiment patterns to identify recurring roadblocks and breakthroughs.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="workflow-step-card">
+          <div class="step-num" aria-hidden="true">03</div>
+          <div class="step-content">
+            <h3 class="step-title">Consult &amp; export</h3>
+            <p class="step-desc">
+              Discuss complex architectures with your AI mentor or export clean PDF summaries for retrospectives.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Quiet Tech Stack Line -->
+  <section class="tech-stack-line" aria-label="Technology Stack">
+    <div class="landing-container text-center">
+      <p class="tech-stack-text">
+        Built with Angular 21, Node, MongoDB and Gemini
+      </p>
+    </div>
+  </section>
+
+  <!-- 5. Final CTA Banner -->
+  <section class="landing-section cta-section" id="cta">
+    <div class="landing-container">
+      <div class="cta-card">
+        <div class="cta-content">
+          <h2 class="cta-title">Start keeping your engineering journal</h2>
+          <p class="cta-text">
+            Build a searchable archive of your technical growth and code solutions today.
+          </p>
+        </div>
+        <div class="cta-actions">
+          <a routerLink="/register" class="btn-primary cta-btn" id="footer-cta-register">
+            <span>Create account</span>
+            <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Footer -->
+  <footer class="landing-footer" role="contentinfo">
+    <div class="landing-container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <div class="footer-brand">
+            <span class="brand-mark" aria-hidden="true"><i class="bi bi-journal-code"></i></span>
+            <span class="brand-text">DevJournal</span>
+          </div>
+          <p class="footer-tagline">
+            Intelligent engineering logbook and personal AI mentor for software developers.
+          </p>
+        </div>
+
+        <div class="footer-links-col">
+          <h3 class="footer-heading">Navigation</h3>
+          <ul class="footer-nav-list">
+            <li><a routerLink="/" fragment="features">Features</a></li>
+            <li><a routerLink="/" fragment="how-it-works">How it works</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h3 class="footer-heading">Access</h3>
+          <ul class="footer-nav-list">
+            <li><a routerLink="/login">Sign in</a></li>
+            <li><a routerLink="/register">Create account</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h3 class="footer-heading">Project</h3>
+          <ul class="footer-nav-list">
+            <li>
+              <a href="https://github.com/thistechbabe1/DevJournal" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-github me-1" aria-hidden="true"></i> GitHub repository
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2026 DevJournal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</div>

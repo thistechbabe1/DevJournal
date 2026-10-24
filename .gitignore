@@ -1,8 +1,10 @@
 # Environment variables
-.env
+.env*
+!.env.example
 *.env
-backend/.env
-frontend/.env
+backend/.env*
+!backend/.env.example
+frontend/.env*
 
 # Node & dependencies
 node_modules/
@@ -18,3 +20,4 @@ npm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+scratch/

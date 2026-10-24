@@ -1,52 +1,67 @@
 <div class="journal-page-wrapper">
   <div class="journal-content-container">
     <div class="journal-header-section">
-      <h1 class="journal-page-title">My Journal Entries</h1>
-      <button class="btn-custom-primary" (click)="addNewJournal()">
-        <i class="bi bi-plus-lg me-2"></i> New Journal
+      <h1 class="journal-page-title">My journal entries</h1>
+      <button class="btn-primary" (click)="addNewJournal()">
+        <i class="bi bi-plus-lg me-2" aria-hidden="true"></i> New journal
       </button>
     </div>
 
-    <div class="filter-controls-section">
-      <button class="filter-option-btn" (click)="sortJournals('date')">
-        <span>Sort by Date</span>
-        <i class="bi bi-caret-down-fill ms-2"></i>
+    <div class="filter-controls-section" role="toolbar" aria-label="Journal filtering and sorting controls">
+      <button
+        class="filter-option-btn"
+        (click)="sortJournals('date')"
+        [attr.aria-label]="'Sort by date, current direction ' + sortDirection()['date']"
+      >
+        <span>Sort by date</span>
+        <i class="bi bi-caret-down-fill ms-2" aria-hidden="true"></i>
       </button>
-      <button class="filter-option-btn" (click)="sortJournals('tag')">
-        <span>Sort by Tag</span>
-        <i class="bi bi-caret-down-fill ms-2"></i>
+      <button
+        class="filter-option-btn"
+        (click)="sortJournals('tag')"
+        [attr.aria-label]="'Sort by tag, current direction ' + sortDirection()['tag']"
+      >
+        <span>Sort by tag</span>
+        <i class="bi bi-caret-down-fill ms-2" aria-hidden="true"></i>
       </button>
-      <button class="filter-option-btn" (click)="sortJournals('category')">
-        <span>Sort by Category</span>
-        <i class="bi bi-caret-down-fill ms-2"></i>
+      <button
+        class="filter-option-btn"
+        (click)="sortJournals('category')"
+        [attr.aria-label]="'Sort by category, current direction ' + sortDirection()['category']"
+      >
+        <span>Sort by category</span>
+        <i class="bi bi-caret-down-fill ms-2" aria-hidden="true"></i>
       </button>
 
       <button
         class="filter-option-btn"
         [class.active]="currentView() === 'all'"
+        [attr.aria-pressed]="currentView() === 'all'"
         (click)="setCurrentView('all')"
-        >
-        <span>All Journals</span>
+      >
+        <span>All journals</span>
       </button>
       <button
         class="filter-option-btn"
         [class.active]="currentView() === 'published'"
+        [attr.aria-pressed]="currentView() === 'published'"
         (click)="setCurrentView('published')"
-        >
+      >
         <span>Published</span>
       </button>
       <button
         class="filter-option-btn"
         [class.active]="currentView() === 'drafts'"
+        [attr.aria-pressed]="currentView() === 'drafts'"
         (click)="setCurrentView('drafts')"
-        >
+      >
         <span>Drafts</span>
       </button>
     </div>
 
     @if (isLoading()) {
       <div class="info-message loading-state">
-        <div class="spinner-border text-primary-purple" role="status">
+        <div class="spinner-border text-accent" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
         <p class="mt-3">Loading journal entries...</p>
@@ -55,18 +70,16 @@
 
     @if (errorMessage()) {
       <div class="info-message error-state" role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
         <span>{{ errorMessage() }}</span>
       </div>
     }
 
     @if (!isLoading() && !errorMessage() && journalEntries().length === 0) {
-      <div
-        class="info-message no-entries-state"
-        >
+      <div class="info-message no-entries-state">
         <p>No journal entries found in the "{{ currentView() | titlecase }}" section. Start by creating a new one!</p>
-        <button class="btn-custom-primary mt-3" (click)="addNewJournal()">
-          Create First Journal
+        <button class="btn-primary mt-3" (click)="addNewJournal()">
+          Create first journal
         </button>
       </div>
     }
@@ -76,32 +89,39 @@
         <div
           class="journal-entry-card"
           (click)="viewJournal(entry._id)"
-          [style.animation-delay]="i * 0.1 + 's'"
-          >
-          <div
-            class="entry-thumbnail"
-          [style.background-image]="
-            'url(' + (entry.imageUrl || placeholderImage) + ')'
-          "
-          ></div>
+          tabindex="0"
+          role="article"
+          [attr.aria-label]="entry.title"
+          (keydown.enter)="viewJournal(entry._id)"
+        >
+          <div class="entry-thumbnail-wrapper">
+            <app-journal-cover
+              [journalId]="entry._id"
+              [title]="entry.title"
+              [category]="entry.category"
+              [imageUrl]="entry.imageUrl"
+              variant="card"
+            ></app-journal-cover>
+          </div>
           <div class="entry-details">
-            <h2 class="entry-card-title">{{ entry.title }}</h2>
-            @if (entry.status === 'draft') {
-              <span class="badge bg-warning text-dark draft-badge me-2">DRAFT</span>
-            }
+            <div class="entry-title-row">
+              <h2 class="entry-card-title">{{ entry.title }}</h2>
+              @if (entry.status === 'draft') {
+                <span class="badge draft-badge">Draft</span>
+              }
+            </div>
             <p class="entry-card-date">{{ entry.date | date : "mediumDate" }}</p>
             <div class="entry-tags">
               @for (tag of entry.tags; track tag) {
-                <span class="journal-tag">{{
-                  tag
-                }}</span>
+                <span class="journal-tag">{{ tag }}</span>
               }
             </div>
             <button
-              class="btn-custom-secondary btn-card-edit"
+              class="btn-secondary btn-card-edit"
               (click)="$event.stopPropagation(); editJournal(entry._id)"
-              >
-              <i class="bi bi-pencil-fill me-2"></i>
+              aria-label="Edit journal entry"
+            >
+              <i class="bi bi-pencil-fill me-2" aria-hidden="true"></i>
               <span>Edit</span>
             </button>
           </div>

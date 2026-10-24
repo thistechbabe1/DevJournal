@@ -6,8 +6,11 @@ const protect = async (req, res, next) => {
 
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
+      if (!process.env.JWT_SECRET) {
+        throw new Error('FATAL: JWT_SECRET environment variable is missing.');
+      }
       token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret');
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = await User.findById(decoded.userId || decoded.id).select('-password');
 
       if (!req.user) {

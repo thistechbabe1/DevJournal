@@ -53,6 +53,8 @@ describe('DashboardComponent', () => {
     expect(component).toBeTruthy();
     expect(component.totalJournals()).toBe(1);
     expect(component.draftCount()).toBe(1);
+    expect(component.journalPlural()).toBe('journal');
+    expect(component.draftPlural()).toBe('draft');
     expect(component.activities().length).toBe(2);
     expect(component.formattedLastActivityDate()).not.toBe('N/A');
   });

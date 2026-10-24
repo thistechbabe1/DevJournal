@@ -1,15 +1,15 @@
 <div class="chat-page-container">
   <div class="chat-window">
     <header class="chat-header">
-      <i class="fas fa-robot me-2"></i>
+      <i class="bi bi-robot me-2" aria-hidden="true"></i>
       <h1 class="chat-title">AI Assistant</h1>
     </header>
 
-    <main class="messages-area" #messageContainer>
+    <div class="messages-area" #messageContainer role="log" aria-live="polite" aria-label="Conversation with AI Assistant">
       @for (msg of messages; track $index) {
         <div class="message-row" [ngClass]="'sender-' + msg.sender">
-          <div class="avatar">
-            <i [ngClass]="msg.sender === 'ai' ? 'fas fa-robot' : 'fas fa-user'"></i>
+          <div class="avatar" aria-hidden="true">
+            <i [ngClass]="msg.sender === 'ai' ? 'bi bi-robot' : 'bi bi-person-fill'"></i>
           </div>
           <div class="message-content">
             <div class="message-bubble">
@@ -18,9 +18,10 @@
                 <button
                   class="copy-code-btn"
                   title="Copy code"
+                  aria-label="Copy code to clipboard"
                   (click)="copyCode($event, msg.text)"
-                  >
-                  <i class="fas fa-copy"></i>
+                >
+                  <i class="bi bi-clipboard" aria-hidden="true"></i>
                 </button>
               }
             </div>
@@ -30,22 +31,23 @@
 
       @if (isLoading) {
         <div class="message-row sender-ai">
-          <div class="avatar"><i class="fas fa-robot"></i></div>
+          <div class="avatar" aria-hidden="true"><i class="bi bi-robot"></i></div>
           <div class="message-content">
             <div class="message-bubble">
-              <div class="typing-indicator">
+              <div class="typing-indicator" aria-label="AI is thinking">
                 <span></span><span></span><span></span>
               </div>
             </div>
           </div>
         </div>
       }
-    </main>
+    </div>
 
     <footer class="chat-input-area">
       <textarea
         class="chat-textarea"
         placeholder="Ask a question..."
+        aria-label="Ask a question to AI Assistant"
         [(ngModel)]="userMessage"
         (input)="autoResize($event)"
         (keydown.enter)="onEnter($event)"
@@ -57,8 +59,9 @@
         (click)="sendMessage()"
         [disabled]="isLoading || !userMessage.trim()"
         title="Send Message"
-        >
-        <i class="fas fa-paper-plane"></i>
+        aria-label="Send Message"
+      >
+        <i class="bi bi-send-fill" aria-hidden="true"></i>
       </button>
     </footer>
   </div>

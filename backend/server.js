@@ -1,4 +1,6 @@
 require('dotenv').config();
+const { verifyEnvironment } = require('./config/envCheck');
+verifyEnvironment();
 const connectDB = require('./config/db');
 const app = require('./app');
 

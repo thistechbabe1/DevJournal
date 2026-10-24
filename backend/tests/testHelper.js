@@ -1,11 +1,15 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
+// Set default JWT secret for testing environment
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'test_jwt_secret_only';
+process.env.JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
+
 let mongoServer;
 
 const connectDB = async () => {
-  process.env.JWT_SECRET = 'test_jwt_secret_only';
-  process.env.JWT_EXPIRES_IN = '24h';
+  process.env.JWT_SECRET = process.env.JWT_SECRET || 'test_jwt_secret_only';
+  process.env.JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 
   // Ensure Mongoose connects to in-memory server regardless of any pre-existing process.env.MONGO_URI
   mongoServer = await MongoMemoryServer.create({
