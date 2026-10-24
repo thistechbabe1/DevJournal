@@ -26,11 +26,6 @@ describe('AddJournalComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load tinymceApiKey from environment', () => {
-    expect(component.tinymceApiKey).toBeDefined();
-    expect(typeof component.tinymceApiKey).toBe('string');
-  });
-
   it('should initialize editorConfig with skin and content_style', () => {
     expect(component.editorConfig).toBeDefined();
     expect(['oxide', 'oxide-dark']).toContain(component.editorConfig['skin']);

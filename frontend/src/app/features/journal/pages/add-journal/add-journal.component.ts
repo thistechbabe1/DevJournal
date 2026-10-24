@@ -28,8 +28,6 @@ export class AddJournalComponent implements OnInit, OnDestroy {
   isEditMode: boolean = false;
   journalId: string | null = null;
   sanitizedBackendContent: SafeHtml | null = null;
-
-  readonly tinymceApiKey: string = environment.tinymceApiKey;
   isEditorActive: boolean = true;
   editorConfig: Record<string, any> = {};
   private currentEditor: any = null;
